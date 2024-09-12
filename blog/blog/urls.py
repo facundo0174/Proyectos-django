@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from blog.views import saludo #se importa la funcion en este caso SOLO SALUDO, si quieres todo haz * o solo import view
+#blog seria el 2do blow, o mejor dicho el blog mas inmediato que contenga el archivo url.py
+# aqui se añaden los url en forma de tupla, (NOMBRE URL ENLAZADA , VISTA ASOCIADA),
+# los urlpatterns son los url que le siguen a un "/", por ejemplo google.com/tuBusqueda, tuBusqueda sera contenida dentro de urlpatterns 
+# para poder acceder a saludo se debera poner en el buscador localHost:puerto(predeterminado de django = 8000)/saludo
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('saludo/', saludo),
 ]
