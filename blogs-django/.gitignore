@@ -1,0 +1,11 @@
+env
+.env
+__pycache__
+migrations
+db.sqlite3
+/blog/media/*
+staticfiles
+../entorno
+../apuntes_django
+
+
