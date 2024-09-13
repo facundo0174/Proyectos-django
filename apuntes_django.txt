@@ -1,0 +1,16 @@
+- la pagina de django contiene SIEMPRE informacion muy importante sobre como interactua cada funcion del mismo
+y sobre todo que utilizar para un proyecto minimamente viable.
+
+-para peticiones url que recibe el view:
+    *Request --> para hacer peticion, trabaja con objetos tipo request
+    *HttpResponse --> para enviar respuesta de la peticion
+
+- explicacion de que hace cada .py default que django crea.
+    * init.py -> se utiliza para definir modulos/paquetes que interactuan e inicializan con el proyecto
+    * settings-py -> contiene las configuraciones del proyecto tales como bd, seguridad apps etc
+    * url.py -> define rutas url que sirven por lo general para redireccionnar, por ejemplo apretar el boton/texto "informacion" llevara a una ruta url especializada.
+    *wsgi.py -> archivo que sirve para la comunicacion entre servidores.
+
+- view.py --> se utiliza para acceder a otra "pagina" que contenga formate texto de manera predeterminada, como se lo muestra en el 
+ejemplo, de esta manera se pueden desarrollar paginas totalmente desde 0 y vincularlas luego mediante view.py junto con urls.py.
+
