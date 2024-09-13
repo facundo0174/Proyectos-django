@@ -5,7 +5,9 @@ migrations
 db.sqlite3
 /blog/media/*
 staticfiles
-../entorno
-../apuntes_django
+../entorno/
+../apuntes_django.txt
+../estructura.txt
+
 
 
