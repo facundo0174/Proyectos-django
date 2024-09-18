@@ -20,4 +20,4 @@ DATABASES = {
     }
 }
 
-os.environ['DJANGO_PORT'] = 8000
+os.environ['DJANGO_PORT'] = "8000"

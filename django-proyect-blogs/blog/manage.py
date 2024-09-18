@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blog.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blog.configurations.local')
     load_dotenv()
     port=os.getenv('DJANGO_PORT')
     try:
