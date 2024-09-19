@@ -14,3 +14,75 @@ y sobre todo que utilizar para un proyecto minimamente viable.
 - view.py --> se utiliza para acceder a otra "pagina" que contenga formate texto de manera predeterminada, como se lo muestra en el 
 ejemplo, de esta manera se pueden desarrollar paginas totalmente desde 0 y vincularlas luego mediante view.py junto con urls.py.
 
+
+
+_____________________otros apuntes_______________________
+
+
+Para realizar un renderizado condicional en una página web de Django basado en el rol del usuario (“visitante”, “administrador”, “usuario”), puedes seguir estos pasos:
+
+Definir los roles de usuario: Asegúrate de que tu modelo de usuario tenga un campo que defina el rol del usuario. Por ejemplo, puedes agregar un campo role en tu modelo de usuario.
+Crear vistas y plantillas: Define las vistas y plantillas que se renderizarán condicionalmente.
+Utilizar lógica condicional en las plantillas: Usa la lógica condicional en tus plantillas para mostrar contenido basado en el rol del usuario.
+Aquí tienes un ejemplo paso a paso:
+
+Paso 1: Definir los roles de usuario
+Supongamos que tienes un modelo de usuario extendido con un campo role:
+
+Python
+
+from django.contrib.auth.models import AbstractUser
+
+class CustomUser(AbstractUser):
+    ROLE_CHOICES = (
+        ('visitor', 'Visitante'),
+        ('admin', 'Administrador'),
+        ('user', 'Usuario'),
+    )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='visitor')
+Código generado por IA. Revisar y usar cuidadosamente. Más información sobre preguntas frecuentes.
+Paso 2: Crear vistas y plantillas
+Define una vista que pase el rol del usuario al contexto de la plantilla:
+
+Python
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def home(request):
+    user_role = request.user.role
+    context = {'role': user_role}
+    return render(request, 'home.html', context)
+Código generado por IA. Revisar y usar cuidadosamente. Más información sobre preguntas frecuentes.
+Paso 3: Utilizar lógica condicional en las plantillas
+En tu plantilla home.html, usa la lógica condicional para mostrar contenido basado en el rol del usuario:
+
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h1>Bienvenido, {{ user.username }}</h1>
+
+    {% if role == 'admin' %}
+        <p>Hola Administrador, tienes acceso completo.</p>
+        <!-- Contenido exclusivo para administradores -->
+    {% elif role == 'user' %}
+        <p>Hola Usuario, tienes acceso limitado.</p>
+        <!-- Contenido exclusivo para usuarios -->
+    {% else %}
+        <p>Hola Visitante, por favor regístrate o inicia sesión.</p>
+        <!-- Contenido exclusivo para visitantes -->
+    {% endif %}
+</body>
+</html>
+Código generado por IA. Revisar y usar cuidadosamente. Más información sobre preguntas frecuentes.
+Resumen
+Definir roles en el modelo de usuario.
+Crear vistas que pasen el rol del usuario al contexto.
+Usar lógica condicional en las plantillas para mostrar contenido basado en el rol.
+
