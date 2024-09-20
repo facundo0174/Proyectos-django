@@ -7,7 +7,9 @@
 {%endblock title_layout %}
 
 {%block content_layout%} 
+    {%include 'components/commons/headers.html'%}
     <main> 
         {%block content %} {%endblock content %}
     </main>
+    {%include 'components/commons/footers.html'%}
 {%endblock content_layout%}
