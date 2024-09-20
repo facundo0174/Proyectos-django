@@ -86,3 +86,25 @@ Definir roles en el modelo de usuario.
 Crear vistas que pasen el rol del usuario al contexto.
 Usar lógica condicional en las plantillas para mostrar contenido basado en el rol.
 
+--------------------------------------------------------
+explicación de algunas importaciones comunes en Django y sus utilidades:
+
+-from django.shortcuts import render:
+Función: Renderiza una plantilla HTML con un contexto dado.
+Utilidad: Facilita la creación de vistas que devuelven respuestas HTML.
+
+-from django.http import HttpResponse:
+Función: Devuelve una respuesta HTTP simple.
+Utilidad: Útil para devolver texto plano o datos simples en una respuesta HTTP.
+
+-from django.urls import path:
+Función: Define rutas URL para tu aplicación.
+Utilidad: Permite mapear URLs a vistas específicas.
+
+-from django.db import models:
+Función: Proporciona clases base para definir modelos de datos.
+Utilidad: Facilita la creación y manipulación de tablas en la base de datos.
+
+-from django.contrib import admin:
+Función: Registra modelos para el sitio de administración de Django.
+Utilidad: Permite gestionar modelos a través de la interfaz de administración de Django.
