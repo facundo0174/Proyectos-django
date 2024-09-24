@@ -14,16 +14,16 @@ def create_groups_and_permissions(sender,instance,created,**kwargs):
         try:
             post_content_type=ContentType.objects.get_for_model(Post)
             #permisos de post
-            view_post_permission=Permission.Objects.get(codename='view_post', ContentType= post_content_type)
-            add_post_permission=Permission.Objects.get(codename='add_post', ContentType= post_content_type)
-            change_post_permission=Permission.Objects.get(codename='change_post', ContentType= post_content_type)
-            delete_post_permission=Permission.Objects.get(codename='delete_post', ContentType= post_content_type)
+            view_post_permission=Permission.objects.get(codename='view_post', content_type= post_content_type)
+            add_post_permission=Permission.objects.get(codename='add_post', content_type= post_content_type)
+            change_post_permission=Permission.objects.get(codename='change_post', content_type= post_content_type)
+            delete_post_permission=Permission.objects.get(codename='delete_post', content_type= post_content_type)
             #permisos de comentarios
             comment_content_type=ContentType.objects.get_for_model(Comment)
-            view_comment_permission=Permission.Objects.get(codename='view_comment', ContentType=comment_content_type)
-            add_comment_permission=Permission.Objects.get(codename='add_comment', ContentType=comment_content_type)
-            change_comment_permission=Permission.Objects.get(codename='change_comment', ContentType=comment_content_type)
-            delete_comment_permission=Permission.Objects.get(codename='delete_comment', ContentType=comment_content_type)
+            view_comment_permission=Permission.objects.get(codename='view_comment', content_type=comment_content_type)
+            add_comment_permission=Permission.objects.get(codename='add_comment', content_type=comment_content_type)
+            change_comment_permission=Permission.objects.get(codename='change_comment', content_type=comment_content_type)
+            delete_comment_permission=Permission.objects.get(codename='delete_comment', content_type=comment_content_type)
 
             #creacion del grupo "registrados/usuarios"
             registered_group, created= Group.objects.get_or_create(name = 'registred')
@@ -44,7 +44,7 @@ def create_groups_and_permissions(sender,instance,created,**kwargs):
                                             delete_comment_permission)
             #creacion del grupo administrador
             registered_group, created= Group.objects.get_or_create(name = 'administrator')
-            registered_group.permissions.set(Permission.objects.all)
+            registered_group.permissions.set(Permission.objects.all())
 
 
 
