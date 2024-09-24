@@ -11,3 +11,24 @@ class PostDeleteView(TemplateView):
 
 class PostCreateView(TemplateView):
     template_name='post/post_create.html'
+
+class SeccionIA(TemplateView):
+    template_name='post/seccion_IA.html'
+
+class SeccionAvances(TemplateView):
+    template_name='post/seccion_avances_tegnologicos.html'
+
+class SeccionComponentes(TemplateView):
+    template_name='post/seccion_componentes.html'
+
+class SeccionEmpresas(TemplateView):
+    template_name='post/seccion_empresas.html'
+
+class SeccionProgramacion(TemplateView):
+    template_name='post/seccion_programacion.html'
+
+class SeccionTendencias(TemplateView):
+    template_name='post/seccion_tendencias.html'
+
+class AcercaDe(TemplateView):
+    template_name='post/acerca_de.html'

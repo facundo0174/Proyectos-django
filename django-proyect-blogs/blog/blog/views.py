@@ -2,8 +2,8 @@
 '''a cada funcion dentro de este modulo se le denomina vista'''
 '''el modulo views se vincula con el modulo urls, a cada funcion o respuesta o vista, se le
 debera linkear/vincular un url para que pueda DEVOLVER la respuesta de forma visual en el navegador'''
-from django.http import HttpResponse
-import datetime
+#from django.http import HttpResponse
+#import datetime
 from django.views.generic import TemplateView
 # SIEMPRE con httpresponse se recibe como parametro una request o solicitud
 '''
