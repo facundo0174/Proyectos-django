@@ -31,6 +31,8 @@ DEBUG = True
 
 # Application definition
 
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +43,8 @@ INSTALLED_APPS = [
     'apps.post',
     'apps.user',
 ]
+
+AUTH_USER_MODEL = 'user.usuario'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
