@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.post.models import Post,PostImage,Comment,PostCategory
+from apps.post.models import Post,PostImage,Comment,Category
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title','author','category','creation_date','modification_date','allowed_comments')
@@ -44,6 +44,6 @@ class PostImageAdmin(admin.ModelAdmin):
 
 admin.site.register(Post,PostAdmin)
 admin.site.register(Comment,CommentAdmin)
-admin.site.register(PostCategory,CategoryAdmin)
+admin.site.register(Category,CategoryAdmin)
 
 

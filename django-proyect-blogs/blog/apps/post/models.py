@@ -7,7 +7,7 @@ from django.utils.text import slugify
 import os
 
 # Create your models here.
-class PostCategory(models.Model):
+class Category(models.Model):
     id= models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False)
     category_name = models.CharField (max_length=35)
     creation_date = models.DateTimeField(default=timezone.now)
@@ -27,7 +27,7 @@ class Post(models.Model):
     creation_date=models.DateTimeField(default=timezone.now)
     modification_date=models.DateTimeField(auto_now=True)
     allowed_comments=models.BooleanField(default=True)
-    category = models.ForeignKey(PostCategory, on_delete= models.CASCADE, related_name="category", null=False)#se utilizara para obtener todos los post de x categoria segun lo nescesario
+    category = models.ForeignKey(Category, on_delete= models.CASCADE, related_name="category", null=False)#se utilizara para obtener todos los post de x categoria segun lo nescesario
     # CATEGORY DEBE SER SI O SI FALSE; PERO SE DEJO EN TRUE PARA REALIZAR UN PEQUEÑO MIGRATE DE PRUEBA
     def __str__(self):
         return(self.title)
