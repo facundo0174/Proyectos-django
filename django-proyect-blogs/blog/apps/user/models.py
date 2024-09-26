@@ -20,4 +20,4 @@ class usuario(AbstractUser):
     alias = models.CharField(max_length=30 , blank= True) #equivalente a VARCHAR con restricion 30 caracteres y posibilidad de estar en blanco
     avatar = models.ImageField(upload_to=get_avatar_filename, default='user/default/avatar_default.jpg')
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False)
-
+    
