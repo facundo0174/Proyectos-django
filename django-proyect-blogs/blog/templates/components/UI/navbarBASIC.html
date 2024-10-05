@@ -3,11 +3,28 @@
         <li class="p-4 ">
             <a href="{%url 'index' %}"> Inicio  </a>
         </li>
-        <li class="p-4 ">
-            <a href="{%url 'admin:index' %}"> Login ADMIN </a>
-        </li>
-        <li class="p-4 ">
-            <a href="{%url 'user:auth_register' %}"> Registrarse </a>
-        </li>
+        {% if user.is_authenticated %} 
+            <li class="p-4 ">
+                <a href="{%url 'user:user_profile' %}"> Perfil Usuario </a>
+            </li>
+
+            <li>
+                <form method="POST" action="{% url 'user:auth_logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+                </form>
+            </li>
+
+        {%else%}
+            <li class="p-4 ">
+                <a href="{%url 'admin:index' %}"> Login ADMIN </a>
+            </li>
+            <li class="p-4 ">
+                <a href="{%url 'user:auth_login' %}"> Login </a>
+            </li>
+            <li class="p-4 ">
+                <a href="{%url 'user:auth_register' %}"> Registrarse </a>
+            </li>
+        {%endif%}   
     </ul>
 </nav>

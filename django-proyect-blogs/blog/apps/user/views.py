@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView, CreateView
-from apps.user.forms import RegisterForm
+from django.contrib.auth.views import LoginView as LoginViewDjango, LogoutView as LogoutViewDjango
+from apps.user.forms import RegisterForm, LoginForm
 from django.contrib.auth.models import Group
 from django.urls import reverse_lazy
 
@@ -33,3 +34,13 @@ class RegisterView(CreateView):
         # self.object.user_permissions.add(permission)
         return response
 
+class LoginView(LoginViewDjango):
+    template_name = 'auth/auth_login.html'
+    authentication_form = LoginForm
+    def get_success_url(self):
+        return reverse_lazy('index')
+    
+class LogoutView(LogoutViewDjango):
+    def get_success_url(self):
+        return reverse_lazy('index')
+    

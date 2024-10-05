@@ -10,6 +10,8 @@ urlpatterns = [
     path('users/delete/',vistaUser.UserDeleteView.as_view(),name='user_delete'),
     path('users/create/',vistaUser.UserCreateView.as_view(),name='user_create'),
     path('auth/register/',vistaUser.RegisterView.as_view(),name="auth_register"),
+    path('auth/login/',vistaUser.LoginView.as_view(),name='auth_login'),
+    path('auth/logout/',vistaUser.LogoutView.as_view(),name='auth_logout'),
 ]
 
 
