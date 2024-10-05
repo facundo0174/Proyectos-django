@@ -1,5 +1,6 @@
 from django.urls import path
 import apps.post.views as vistaPost
+from django.views.generic import ListView
 #si tienes una view como clase debes hace as view() siempre
 app_name = 'post'
 '''
@@ -22,3 +23,4 @@ urlpatterns = [
     path('posts/seccion6/<slug:slug>/',vistaPost.SeccionTendencias.as_view(),name='seccion_tendencias'),
     
 ]
+

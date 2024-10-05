@@ -79,6 +79,7 @@ class PostImage(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=get_image_filename,default='post/default/post_default.png')
     active = models.BooleanField(default=True)
+    creation_date=models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"postImage:{self.image.id}"

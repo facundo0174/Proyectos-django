@@ -33,7 +33,7 @@ def create_groups_and_permissions(sender,instance,created,**kwargs):
                                             change_comment_permission,
                                             delete_comment_permission)
             #creacion del grupo "Colaboradores"
-            registered_group, created= Group.objects.get_or_create(name = 'colaborators')
+            registered_group, created= Group.objects.get_or_create(name = 'collaborators')
             registered_group.permissions.add(delete_post_permission,
                                             change_post_permission,
                                             add_post_permission,

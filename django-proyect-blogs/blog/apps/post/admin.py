@@ -37,13 +37,15 @@ deactivate_images.short_description="desactivar imagenes seleccionadas"
 class PostImageAdmin(admin.ModelAdmin):
     list_display=('post','image','active')
     search_fields=('post__title','post__id','image','id')
-    list_filter=('activate')
-    ordering=('-creation_date')
+    list_filter=('active',)
+    ordering=('-creation_date',)
     actions=[activate_images,deactivate_images]
 
 
 admin.site.register(Post,PostAdmin)
 admin.site.register(Comment,CommentAdmin)
 admin.site.register(Category,CategoryAdmin)
+admin.site.register(PostImage, PostImageAdmin)
+
 
 
