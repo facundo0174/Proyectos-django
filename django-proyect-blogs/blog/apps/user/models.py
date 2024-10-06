@@ -21,3 +21,14 @@ class usuario(AbstractUser):
     avatar = models.ImageField(upload_to=get_avatar_filename, default='user/default/avatar_default.jpg')
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False)
     
+    @property
+    def is_collaborator(self):
+        return self.groups.filter(name='collaborators').exists()
+    
+    @property
+    def is_admin(self):
+        return self.groups.filter(name='administrator').exists()
+    
+    @property
+    def is_registered(self):
+        return self.groups.filter(name='registred').exists()

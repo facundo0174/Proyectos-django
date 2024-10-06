@@ -12,7 +12,7 @@ siempre mostrara detalle lo cual es incorrecto si presionas el detalle.
 urlpatterns = [
     path('posts/acerca-de/',vistaPost.AcercaDe.as_view(),name='acerca_de'),
     path('post/create/',vistaPost.PostCreateView.as_view(),name='post_create'),
-    path('posts/<slug:slug>/',vistaPost.DetallePostView.as_view(),name='post_detail'),
+    path('posts/<slug:slug>/',vistaPost.PostDetailView.as_view(),name='post_detail'),
     path('posts/<slug:slug>/update/',vistaPost.PostUpdateView.as_view(),name='post_update'),
     path('posts/<slug:slug>/delete/',vistaPost.PostDeleteView.as_view(),name='post_delete'),
     path('posts/seccion1/<slug:slug>/',vistaPost.SeccionAvances.as_view(),name='seccion_avances_tegnologicos'),

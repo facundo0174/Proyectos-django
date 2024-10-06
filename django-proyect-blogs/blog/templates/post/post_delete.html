@@ -1,27 +1,12 @@
 {% extends 'layouts/general_layouts.html' %}
 
-
-{% block title %}
-    POST | DELETE
-{% endblock title %}
-
-
+{% block title %}BORRAR Post | BLOG TEGNOLOGICO{% endblock title %}
 {% block content %}
-    <h1> BORRAR POST </h1>
+<h2>¿Estás seguro de que deseas eliminar este post?</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sí, eliminar</button>
+</form>
+<a href="{% url 'post:post_detail' slug=object.slug %}">Cancelar</a>
+{% comment %} <a href="javascript:history.back()">Cancelar</a> {% endcomment %}
 {% endblock content %}
-
-
-{% comment %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="detalle post" content="width=device-width, initial-scale=1.0">
-    <title>DELETE | POST</title>
-</head>
-<body>
-    <h1> esto es el ELIMINAR un post en templates</h1>
-</body>
-</html>   
-{% endcomment %}
-    
