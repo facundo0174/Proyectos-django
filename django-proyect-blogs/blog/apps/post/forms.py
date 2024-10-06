@@ -43,3 +43,5 @@ class UpdatePostForm(PostForm):
                         image.delete() # Eliminar la imagen si el usuario no la quiere mantener, checkboxes desmarcados
         return post
     
+
+#TODO:'falta realizar el formulario o campo del formulario para categoria y el post_layout para la logica de muestreo de post segun categoria'
