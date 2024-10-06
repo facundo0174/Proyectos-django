@@ -29,9 +29,10 @@ DEBUG = True
 #ALLOWED_HOSTS = ['localhost']
 
 
+
+DEFAULT_POST_IMAGE = 'post/default/post_default.png'
+
 # Application definition
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',

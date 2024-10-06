@@ -3,17 +3,27 @@
         <li class="p-4 ">
             <a href="{%url 'index' %}"> Inicio  </a>
         </li>
-        {% if user.is_authenticated %} 
+        {% if user.is_authenticated %}
+            {% if user.is_superuser or user.is_staf %} 
+
+                <li class="p-4 ">
+                <a href="{%url 'post:post_create' %}"> Crear Post </a>
+                </li>
+                
+            {%endif%}
+            
+            
             <li class="p-4 ">
                 <a href="{%url 'user:user_profile' %}"> Perfil Usuario </a>
             </li>
-
-            <li>
+            
+            <li class="p-4 ">
                 <form method="POST" action="{% url 'user:auth_logout' %}">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
                 </form>
             </li>
+            
 
         {%else%}
             <li class="p-4 ">

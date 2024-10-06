@@ -1,27 +1,15 @@
 {% extends 'layouts/general_layouts.html' %}
-
-
-{% block title %}
-    POST | CREATE
-{% endblock title %}
-
-
+{% block title %} Post | BLOG IA{% endblock title %}
 {% block content %}
-    <h1> CREAR POST </h1>
+    <h2>Crear nuevo post</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="flex flex-col gap-4">
+            <p class="flex flex-col">{{ form.title.label_tag }} {{ form.title }}</p>
+            <p class="flex flex-col"> <label for="id_content">Contenido:</label> {{ form.content }} </p>
+            <p>{{ form.allow_comments.label_tag }} {{ form.allow_comments }}</p>
+            <p><input type="file" name="images" multiple /></p>
+        </div>
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg"> Crear Post </button>
+    </form>
 {% endblock content %}
-
-
-{% comment %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="detalle post" content="width=device-width, initial-scale=1.0">
-    <title>CREAR | POST</title>
-</head>
-<body>
-    <h1> esto es el CREAR un post en templates</h1>
-</body>
-</html>    
-{% endcomment %}
-    
