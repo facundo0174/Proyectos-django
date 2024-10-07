@@ -4,7 +4,7 @@ from apps.post.models import Post, PostImage
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ('title', 'content', 'allowed_comments')
+        fields = ('category','title', 'content', 'allowed_comments')
 
 class NewPostForm(PostForm):
     image = forms.ImageField(required=False)

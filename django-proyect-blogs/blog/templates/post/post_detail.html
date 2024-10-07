@@ -5,9 +5,9 @@
     {% if active_images %}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
 
-        {% for image in active_images %}
-            <img src="{{ image.image.url }}" alt="Portada del post" class="w-[400px] object-cover aspect-[16/9]" />
-        {% endfor %}
+            {% for image in active_images %}
+                <img src="{{ image.image.url }}" alt="Portada del post" class="w-[400px] object-cover aspect-[16/9]" />
+            {% endfor %}
         
         </div>
     {% endif %}

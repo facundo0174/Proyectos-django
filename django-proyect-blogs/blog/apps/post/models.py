@@ -76,6 +76,7 @@ def get_image_filename(instance,filename):
     return os.path.join('post/cover',new_fileName)
 
 class PostImage(models.Model):
+    id=models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post = models.ForeignKey(Post,on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=get_image_filename,default='post/default/post_default.png')
     active = models.BooleanField(default=True)

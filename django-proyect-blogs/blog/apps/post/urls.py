@@ -21,6 +21,7 @@ urlpatterns = [
     path('posts/seccion4/<slug:slug>/',vistaPost.SeccionIA.as_view(),name='seccion_IA'),
     path('posts/seccion5/<slug:slug>/',vistaPost.SeccionProgramacion.as_view(),name='seccion_programacion'),
     path('posts/seccion6/<slug:slug>/',vistaPost.SeccionTendencias.as_view(),name='seccion_tendencias'),
+    path('post/list/',vistaPost.PostListView.as_view(),name='post_list'),
     
 ]
 
