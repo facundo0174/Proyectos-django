@@ -1,10 +1,19 @@
 from django import forms
-from apps.post.models import Post, PostImage
+from apps.post.models import Post, PostImage, Category
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('category','title', 'content', 'allowed_comments')
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ('category_name',)
+        labels ={'category_name':'Nombre de Categoria',}
+        error_messages = {'category_name': {'unique': 'Ya existe una categoría con este nombre. intentalo nuevamente'},}
+
+        
 
 class NewPostForm(PostForm):
     image = forms.ImageField(required=False)
@@ -43,5 +52,3 @@ class UpdatePostForm(PostForm):
                         image.delete() # Eliminar la imagen si el usuario no la quiere mantener, checkboxes desmarcados
         return post
     
-
-#TODO:'falta realizar el formulario o campo del formulario para categoria y el post_layout para la logica de muestreo de post segun categoria'

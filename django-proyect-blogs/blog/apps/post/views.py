@@ -1,9 +1,12 @@
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView,DeleteView,UpdateView
-from apps.post.models import Post, PostImage
-from apps.post.forms import NewPostForm, UpdatePostForm
+from apps.post.models import Post, PostImage, Category
+from apps.post.forms import NewPostForm, UpdatePostForm, CategoryForm
 from django.urls import reverse,reverse_lazy
 from django.conf import settings
-
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 
 class PostUpdateView(UpdateView):
     model = Post
@@ -53,37 +56,26 @@ class PostUpdateView(UpdateView):
 class PostDeleteView(DeleteView):
     model = Post
     template_name = 'post/post_delete.html'
-    success_url = reverse_lazy('post:post_list')
+    success_url = reverse_lazy('post:category_recent')
 
 class PostCreateView(TemplateView):
     template_name='post/post_create.html'
 
-class SeccionIA(TemplateView):
-    template_name='post/seccion_IA.html'
-
-class SeccionAvances(TemplateView):
-    template_name='post/seccion_avances_tegnologicos.html'
-
-class SeccionComponentes(TemplateView):
-    template_name='post/seccion_componentes.html'
-
-class SeccionEmpresas(TemplateView):
-    template_name='post/seccion_empresas.html'
-
-class SeccionProgramacion(TemplateView):
-    template_name='post/seccion_programacion.html'
-
-class SeccionTendencias(TemplateView):
-    template_name='post/seccion_tendencias.html'
-
-class AcercaDe(TemplateView):
-    template_name='post/acerca_de.html'
-
 class PostListView(ListView):
     model = Post
-    template_name = 'post/post_list.html'
+    template_name = 'post/category_recientes.html'
     context_object_name = 'posts'
+    paginate_by = 5
 
+    def get_queryset(self):
+        # Ordena las categorías alfabéticamente por el campo category_name pero la bd sigue desordenanda solo la vista es ordenada
+        return Post.objects.order_by('-creation_date')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['posts'] = Post.objects.all()  # Asegúrate de que estás pasando las categorías
+        return context
+    
 class PostCreateView(CreateView):
     model = Post
     form_class = NewPostForm
@@ -116,8 +108,85 @@ class PostDetailView(DetailView):
         active_images = self.object.images.filter(active=True)
         context['active_images'] = active_images
         return context
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'post/category_list.html'
+    context_object_name = 'categories'
+    paginate_by = 5
+
+    def get_queryset(self):
+        # Ordena las categorías alfabéticamente por el campo category_name pero la bd sigue desordenanda solo la vista es ordenada
+        return Category.objects.order_by('category_name')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()  # Asegúrate de que estás pasando las categorías
+        return context
 
+class CategoryCreateView(CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'post/category_create.html'
+    success_url = reverse_lazy('index')
 
+    def form_valid(self, form):
+        
+        #usamos orm django para buscar en la bd datos que coincidan, si coincide retorna errores y no guarda
+        if Category.objects.filter(category_name = form.cleaned_data['category_name']).exists():
+            return self.form_invalid(form)  # Devuelve el formulario con error
+        
+        return super().form_valid(form)#solo guarda si no encuentra coincidencias
 
+class CategoryUpdateView(UpdateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'post/category_update.html'
+    success_url = reverse_lazy('index')
 
+    def form_valid(self, form):
+        
+        #usamos orm django para buscar en la bd datos que coincidan, si coincide retorna errores y no guarda
+        if Category.objects.filter(category_name = form.cleaned_data['category_name']).exists():
+            form.add_error('category_name', 'Ya existe una categoría con este nombre.')
+            return self.form_invalid(form)  # Devuelve el formulario con error
+        
+        return super().form_valid(form)#solo guarda si no encuentra coincidencias
+
+class CategoryDeleteView(DeleteView):
+    model = Category
+    template_name = 'post/category_delete.html'
+    success_url = reverse_lazy('index')
+
+class PostByCategoryView(ListView):
+    model = Post
+    template_name = 'post/post_by_category.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        # Obtén el slug de la URL y busca la categoría correspondiente
+        category_slug = self.kwargs['slug']
+        category = get_object_or_404(Category, slug=category_slug)
+        if category_slug == 'Recientes': #sencible a mayusculas y minusculas
+            return Post.objects.all().order_by('-creation_date') #ordeno a todos por fecha reciente
+        else:
+            return Post.objects.filter(category=category).order_by('-creation_date') # ordeno segun categoria y por fecha reciente
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = get_object_or_404(Category, slug=self.kwargs['slug'])
+        context['categories'] = Category.objects.all()  # Agrega todas las categorías al contexto
+        return context
+
+class AcercaDe(TemplateView):
+    template_name='post/acerca_de.html'
+
+class Recent_Post_View(ListView):
+    model = Post
+    template_name = 'post/category_recent.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        #retorno una lista  de objetos post ordenados por fecha reciente
+        return Post.objects.all().order_by('-creation_date') #ordeno a todos por fecha reciente
+        
