@@ -1,0 +1,12 @@
+{% extends 'layouts/general_layouts.html' %}
+
+{% block title %}BORRAR Categoria | BLOG TEGNOLOGICO{% endblock title %}
+{% block content %}
+<h2>¿Estás seguro de que deseas eliminar esta categoria?, (se eliminaran los post asociados)</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sí, eliminar</button>
+</form>
+<a href="{% url 'post:category_recent' %}">Cancelar</a>
+{% comment %} <a href="javascript:history.back()">Cancelar</a> {% endcomment %}
+{% endblock content %}

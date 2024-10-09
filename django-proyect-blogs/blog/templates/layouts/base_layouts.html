@@ -1,0 +1,21 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> {%block title_layout%} {%endblock title_layout%} </title>
+    {% block extrahead %}  {% endblock extrahead %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    {% comment %}
+        <link rel="shortcut icon" href="{%static 'assets/favicon.ico'%}" type="image/x-icon">
+        para el icono de pestaña
+    {% endcomment %}
+        
+</head>
+<body>
+    {% block content_layout %} {% endblock content_layout %}
+</body>
+</html>

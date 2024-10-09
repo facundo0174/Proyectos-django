@@ -1,0 +1,31 @@
+campos de USUARIO:
+-password
+-last_login
+-is_superuser
+-username 
+-first_name
+-last_name
+-email
+-is_staf
+-is_active
+-alias
+-avatar
+-id
+
+campos de POST:
+-id
+-title
+-slug
+-content
+-creation_date
+-modification_date
+-allowed_comments
+-author_id
+
+campos de COMENTARIOS
+-id
+-content
+-creation_date
+-author_id
+-post_id
+

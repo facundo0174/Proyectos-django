@@ -1,0 +1,15 @@
+{% extends 'layouts/general_layouts.html' %}
+
+{% block title %} ACTUALIZAR Categoria | BLOG TEGNOLOGIA{% endblock title %}
+{% block content %}
+    <h2>Actualizar: {{ form.instance.category_name }}</h2>
+    <form method="post" enctype="multipart/form-data" class="flex flex-col justify-center items-start w-[400px] gap-4">
+        {% csrf_token %}
+        <div class="flex flex-col">{{ form.category_name.label_tag }} {{ form.category_name }}</div>
+        {%if form.category_name.errors%}
+                <span class="text-red-500">{{ form.category_name.errors }}</span>
+            {%endif%}
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg"> Actualizar Categoria </button>
+    </form>
+{% comment %} <a href="javascript:history.back()">Cancelar</a> TENGO 1 SOLO CAMPO A MODIFICAR {% endcomment %}
+{% endblock content %}

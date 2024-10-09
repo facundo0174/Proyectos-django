@@ -3,5 +3,6 @@ env
 __pycache__
 migrations
 db.sqlite3
-/blog/media/*
+/blog/media/**/avatar
+/blog/media/**/cover
 staticfiles

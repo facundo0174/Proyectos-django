@@ -1,4 +1,5 @@
 from .base import *
+print("se uso local")
 DEBUG = True
 
 ALLOWED_HOST = ['127.0.0.1','localhost']

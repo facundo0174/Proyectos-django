@@ -1,0 +1,14 @@
+<nav class = "bg-green-300">
+    <ul class="flex flex-wrap text-wrap justify-center text-2xl font-black">
+        {%for category in categories%}
+            <li class="p-5">
+                {%if category.category_name != 'Recientes'  %}
+                <a href="{%url 'post:post_by_category' slug=category.slug %}"> {{category.category_name}} </a> 
+                {%endif%}
+            </li>
+        {%endfor%}
+            <li class="p-5">
+                <a href="{%url 'post:category_recent' %}"> Recientes </a> 
+            </li>
+    </ul>
+</nav>

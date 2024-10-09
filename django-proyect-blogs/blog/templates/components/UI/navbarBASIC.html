@@ -1,0 +1,49 @@
+<nav class = "bg-blue-400" >
+    <ul class="flex flex-wrap text-wrap text-2xl justify-end ">
+        <li class="p-4 ">
+            <a href="{%url 'index' %}"> Inicio  </a>
+        </li>
+        {% if user.is_authenticated %}
+            {% if user.is_superuser or user.is_staf %} 
+
+                <li class="p-4 ">
+                <a href="{%url 'post:post_create' %}"> Crear Post </a>
+                </li>
+
+                <li class="p-4 ">
+                <a href="{%url 'post:category_create' %}"> Crear Categoria </a>
+                </li>
+
+                <li class="p-4 ">
+                <a href="{%url 'post:category_list' %}"> Editar Categorias </a>
+                </li>
+
+                
+            {%endif%}
+            
+            
+            <li class="p-4 ">
+                <a href="{%url 'user:user_profile' %}"> Perfil Usuario </a>
+            </li>
+            
+            <li class="p-4 ">
+                <form method="POST" action="{% url 'user:auth_logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+                </form>
+            </li>
+            
+
+        {%else%}
+            <li class="p-4 ">
+                <a href="{%url 'admin:index' %}"> Login ADMIN </a>
+            </li>
+            <li class="p-4 ">
+                <a href="{%url 'user:auth_login' %}"> Login </a>
+            </li>
+            <li class="p-4 ">
+                <a href="{%url 'user:auth_register' %}"> Registrarse </a>
+            </li>
+        {%endif%}   
+    </ul>
+</nav>
