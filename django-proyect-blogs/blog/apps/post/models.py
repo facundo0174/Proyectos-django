@@ -8,10 +8,16 @@ import os
 
 # Create your models here.
 class Category(models.Model):
-    id= models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False)
-    category_name = models.CharField (max_length=35)
+    id= models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False,unique=True)
+    category_name = models.CharField (max_length=50, unique=True)
     creation_date = models.DateTimeField(default=timezone.now)
+    slug = models.SlugField (unique=True, null=True,blank=True)
 
+    def save(self,*args,**kwargs):
+        if not self.slug:
+            self.slug = slugify(self.category_name)
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return(self.category_name)
     
