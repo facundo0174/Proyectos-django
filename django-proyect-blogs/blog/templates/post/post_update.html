@@ -17,13 +17,6 @@
         <h3>Imágenes cargadas</h3>
         <div class="flex flex-col gap-4">
             {% for active_img in form.active_images %} 
-                {% comment %} <p>{{ active_img.id }}</p> {% endcomment %} 
-                {% comment %} <p>{{ active_img.post }}</p> {% endcomment %} 
-                {% comment %} <p>{{ active_img.post.author }}</p> {% endcomment %} 
-                {% comment %} <p>{{ active_img.image }}</p> {% endcomment %} 
-                {% comment %} <p>{{ active_img.image.url }}</p> {% endcomment %} 
-                {% comment %} <p>{{ active_img.active }}</p> {% endcomment %} 
-                {% comment %} <p>{{ active_img.creation_date }}</p> {% endcomment %}
                 <p>
                     <a href="{{ active_img.image.url }}" target="_blank"> <img class="inline-flex w-[200px] aspect-[16/9] object-cover" src="{{ active_img.image.url }}" alt="Portada {{ active_img.id }} del post" /> </a>
                     <input type="checkbox" name="keep_image_{{ active_img.id }}" id="keep_image_{{ active_img.id }}" checked />
