@@ -13,8 +13,6 @@ class CategoryForm(forms.ModelForm):
         labels ={'category_name':'Nombre de Categoria',}
         error_messages = {'category_name': {'unique': 'Ya existe una categoría con este nombre. intentalo nuevamente'},}
 
-        
-
 class NewPostForm(PostForm):
     image = forms.ImageField(required=False)
     def save(self, commit=True):
