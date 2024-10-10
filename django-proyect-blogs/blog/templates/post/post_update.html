@@ -4,16 +4,17 @@
 {% block content %}
     <h2>Actualizar: {{ form.instance.title }}</h2>
     <form method="post" enctype="multipart/form-data" class="flex flex-col justify-center items-start w-[400px] gap-4">
-    {% csrf_token %}
-    <div class="flex flex-col">{{ form.title.label_tag }} {{ form.title }}</div>
+        {% csrf_token %}
+        <div class="flex flex-col">{{ form.category.label_tag }} {{ form.category }}</div>
+        <div class="flex flex-col">{{ form.title.label_tag }} {{ form.title }}</div>
         <div class="flex flex-col">
             {{ form.content.label_tag }} {{ form.content }}
         </div>
-        
+    
         <div class="flex gap-4">
             {{ form.allow_comments.label_tag }} {{ form.allow_comments }}
         </div>
-        
+    
         <h3>Imágenes cargadas</h3>
         <div class="flex flex-col gap-4">
             {% for active_img in form.active_images %} 
@@ -24,12 +25,12 @@
                 </p>
             {% endfor %}
         </div>
-    <h3>Cargar nuevas imágenes</h3>
-    <input type="file" name="images" multiple />
-    <div class="flex gap-2">
-        <a href="{% url 'post:post_detail' slug=form.instance.slug %}" class="bg-red-500 text-white p-2 rounded-md">Cancelar</a>
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded-md"> Guardar cambios </button>
-    </div>
+        <h3>Cargar nuevas imágenes</h3>
+        <input type="file" name="images" multiple />
+        <div class="flex gap-2">
+            <a href="{% url 'post:post_detail' slug=form.instance.slug %}" class="bg-red-500 text-white p-2 rounded-md">Cancelar</a>
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded-md"> Guardar cambios </button>
+        </div>
     </form>
 {% comment %} <a href="javascript:history.back()">Cancelar</a> {% endcomment %}
 {% endblock content %}

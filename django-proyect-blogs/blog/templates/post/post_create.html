@@ -8,7 +8,7 @@
             <p class="flex flex-col">{{ form.category.label_tag }} {{ form.category }}</p>
             <p class="flex flex-col">{{ form.title.label_tag }} {{ form.title }}</p>
             <p class="flex flex-col"> <label for="id_content">Contenido:</label> {{ form.content }} </p>
-            <p>{{ form.allow_comments.label_tag }} {{ form.allow_comments }}</p>
+            <p> permitir comentarios:{{ form.allowed_comments }}</p>
             <p><input type="file" name="images" multiple /></p>
         </div>
     <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg"> Crear Post </button>

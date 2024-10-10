@@ -15,13 +15,15 @@ urlpatterns = [
     path('posts/<slug:slug>/',vistaPost.PostDetailView.as_view(),name='post_detail'),
     path('posts/<slug:slug>/update/',vistaPost.PostUpdateView.as_view(),name='post_update'),
     path('posts/<slug:slug>/delete/',vistaPost.PostDeleteView.as_view(),name='post_delete'),
-    path('new/category/',vistaPost.CategoryCreateView.as_view(),name='category_create'),
+    path('category/new/',vistaPost.CategoryCreateView.as_view(),name='category_create'),
     path('category/edit/',vistaPost.CategoryListView.as_view(),name='category_list'),
     path('category/<slug:slug>/update/',vistaPost.CategoryUpdateView.as_view(),name='category_update'),
     path('category/<slug:slug>/delete/',vistaPost.CategoryDeleteView.as_view(),name='category_delete'),
     path('category/Recientes/',vistaPost.Recent_Post_View.as_view(),name='category_recent'),
     path('category/<slug:slug>/',vistaPost.PostByCategoryView.as_view(),name='post_by_category'),
-
+    path('post/<slug:slug>/comment/create/',vistaPost.CommentCreateView.as_view(),name='comment_create'),
+    path('comments/<uuid:pk>/update/', vistaPost.CommentUpdateView.as_view(),name='comment_update'),
+    path('comments/<uuid:pk>/delete/', vistaPost.CommentDeleteView.as_view(),name='comment_delete'),
     
 ]
 
