@@ -1,0 +1,15 @@
+{% extends 'layouts/general_layouts.html' %}
+{% block title %} Crear Categoria | BLOG TEGNOLOGICO{% endblock title %}
+{% block content %}
+    <h2>Crear nueva categoria</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="flex flex-col gap-4">
+            <p class="flex flex-col">{{ form.category_name.label_tag }} {{ form.category_name }}</p>
+            {%if form.category_name.errors%}
+                <span class="text-red-500">{{ form.category_name.errors }}</span>
+            {%endif%}
+        </div>
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg"> Crear Categoria </button>
+    </form>
+{% endblock content %}

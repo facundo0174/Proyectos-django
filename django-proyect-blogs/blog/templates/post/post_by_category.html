@@ -1,0 +1,46 @@
+{% extends 'layouts/general_layouts.html' %}
+{% block title %} Post | BLOG TEGNOLOGICO{% endblock title %}
+{% block content %}
+<h1 class = "px-3 pt-3 pb-3 font-medium text-3xl"> Noticias {{category.category_name}}</h1>
+<div class="grid grid-cols-1 gap-6">
+
+    {% for post in object_list %}
+        <div class="bg-gray-800 text-white rounded-2xl p-6">
+            <h3 class="text-2xl uppercase font-bold">{{ post.title }}</h3>
+            <p>{{ post.content }}</p>
+            <p>Publicado por: <strong class="font-bold">{{ post.author.username }}
+            </strong></p>
+            <p>Fecha de publicación: {{ post.creation_date }}</p>
+            <p>Comentarios permitidos: {{ post.allow_comments|yesno:"Si,No" }}</p>
+            <div class="flex gap-2 mt-8">
+            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_detail' slug=post.slug %}" >Ver post</a>
+            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
+            </div>
+        </div>
+        {% empty %}
+            <h1 class = "px-3 pt-3 pb-3 font-medium text-3xl ">No hay posts en esta categoría.</h1>
+    {% endfor %}
+    
+</div>
+
+<div class="bg-green-400 text-gray-800 rounded-2xl p-6 flex justify-center items-center">
+        {% if page_obj.has_previous %}
+            <div class="flex space-x-4">
+                <a href="?page=1" class="text-black-600 hover:underline" >First</a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="text-blue-600 hover:underline px-2" >Previous</a>
+            </div>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <div class="flex space-x-4">
+                <a href="?page={{ page_obj.next_page_number }}" class="text-blue-600 hover:underline px-2">Next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="text-black-600 hover:underline">Last</a>
+            </div>
+        {% endif %}
+</div>
+
+<div class="bg-yellow-400 text-orange-800 p-2 flex justify-center items-center pt-5">
+        <span class="pt-5">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+</div>
+
+{% endblock content %}

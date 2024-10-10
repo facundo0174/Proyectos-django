@@ -29,6 +29,9 @@ DEBUG = True
 #ALLOWED_HOSTS = ['localhost']
 
 
+
+DEFAULT_POST_IMAGE = 'post/default/post_default.png'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.post',
+    'apps.user',
 ]
+
+AUTH_USER_MODEL = 'user.usuario'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.post.context_processors.categories',
             ],
         },
     },
