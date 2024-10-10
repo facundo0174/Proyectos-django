@@ -32,7 +32,7 @@ class Post(models.Model):
     # si quieres eliminar todos los post al eliminar usuario se coloca: on_delete=models.CASCADE, para que no muestre user al elimnar, on_delete=setnull
     creation_date=models.DateTimeField(default=timezone.now)
     modification_date=models.DateTimeField(auto_now=True)
-    allowed_comments=models.BooleanField(default=True)
+    allowed_comments=models.BooleanField(default=True,editable=True)
     category = models.ForeignKey(Category, on_delete= models.CASCADE, related_name="category", null=False)#se utilizara para obtener todos los post de x categoria segun lo nescesario
     # CATEGORY DEBE SER SI O SI FALSE; PERO SE DEJO EN TRUE PARA REALIZAR UN PEQUEÑO MIGRATE DE PRUEBA
     def __str__(self):
@@ -59,6 +59,7 @@ class Post(models.Model):
         #por lo que se convertira en: localhost/posts/esto-es-un-titulo
         slug = slugify(self.title)
         unique_slug = slug
+        num=0
         while Post.objects.filter(slug=unique_slug).exists():
             unique_slug = f'{slug}-{num}'
             num+=1
@@ -76,7 +77,7 @@ class Comment(models.Model):
 
 def get_image_filename(instance,filename):    
     _, base_fileExtension= os.path.splitext(filename)
-    images_count=instance.post.images.count
+    images_count=instance.post.images.count()
     new_fileName = f"post_{instance.post.id}_coverImage_{images_count + 1}{base_fileExtension}"
     
     return os.path.join('post/cover',new_fileName)
@@ -89,5 +90,5 @@ class PostImage(models.Model):
     creation_date=models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"postImage:{self.image.id}"
+        return f"postImage:{self.id}"
     
