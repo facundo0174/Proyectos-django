@@ -1,49 +1,55 @@
-<nav class = "bg-blue-400" >
-    <ul class="flex flex-wrap text-wrap text-2xl justify-end ">
-        <li class="p-4 ">
-            <a href="{%url 'index' %}"> Inicio  </a>
+{% load static %}
+
+<nav class=" p-5 shadow md:flex md:items-center md:justify-between relative">
+    <div class="flex items-center"> <!-- Asegúrate de que 'items-center' esté aquí -->
+        <a href="{% url 'index' %}" class="cursor-pointer mr-4"> <!-- Margen a la derecha -->
+            <img src="{% static 'assets/logo.png' %}" alt="Logo" class="h-12 w-12 md:h-16 md:w-16"> <!-- Ajusta el tamaño según sea necesario -->
+        </a>
+        <span class="text-3xl cursor-pointer mx-2 md:hidden block">
+            <ion-icon name="menu" onclick="Menu(this)"></ion-icon>
+        </span>
+    </div>    
+
+    <ul class="bg-slate-600 md:bg-transparent md:flex md:items-center md:static absolute w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 pl-7 transition-all ease-in duration-500" id="menuList">
+        <li class="p-4">
+            <a href="{% url 'index' %}" class="text-white hover:text-blue-200 duration-500">Inicio</a>
         </li>
         {% if user.is_authenticated %}
-            <strong class="p-4 ">welcome {{ user.username }}</strong>
-            {% if user.is_superuser or user.is_staf or user.is_collaborator %} 
-
-                <li class="p-4 ">
-                <a href="{%url 'post:post_create' %}"> Publicar </a>
+            <strong class="p-4 text-white">Welcome {{ user.username }}</strong>
+            {% if user.is_superuser or user.is_staff or user.is_collaborator %}
+                <li class="p-4">
+                    <a href="{% url 'post:post_create' %}" class="text-white hover:text-blue-200 duration-500">Publicar</a>
                 </li>
-
-                <li class="p-4 ">
-                <a href="{%url 'post:category_create' %}"> Crear Categoria </a>
+                <li class="p-4">
+                    <a href="{% url 'post:category_create' %}" class="text-white hover:text-blue-200 duration-500">Crear Categoria</a>
                 </li>
-
-                <li class="p-4 ">
-                <a href="{%url 'post:category_list' %}"> Editar Categorias </a>
+                <li class="p-4">
+                    <a href="{% url 'post:category_list' %}" class="text-white hover:text-blue-200 duration-500">Editar Categorias</a>
                 </li>
-
-                
-            {%endif%}
-            
-            
-            <li class="p-4 ">
-                <a href="{%url 'user:user_profile' %}"> Perfil</a>
+            {% endif %}
+            <li class="p-4">
+                <a href="{% url 'user:user_profile' %}" class="text-white hover:text-blue-200 duration-500">Perfil</a>
             </li>
-            
-            <li class="p-4 ">
-                <form method="POST" action="{% url 'user:auth_logout'%}?next={{ request.path }}">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
+            <li class="p-4">
+                <form method="POST" action="{% url 'user:auth_logout' %}?next={{ request.path }}">
+                    {% csrf_token %}
+                    <button type="submit" class="text-white hover:text-blue-200 duration-500">Logout</button>
                 </form>
             </li>
-            
-        {%else%}
-            <li class="p-4 ">
-                <a href="{%url 'admin:index' %}"> Login ADMIN </a>
+        {% else %}
+            <li class="p-4">
+                <a href="{% url 'admin:index' %}" class="text-white hover:text-blue-200 duration-500">Login ADMIN</a>
             </li>
-            <li class="p-4 ">
-                <a href="{%url 'user:auth_login' %}?next={{ request.path }}"> Login </a>
+            <li class="p-4">
+                <a href="{% url 'user:auth_login' %}?next={{ request.path }}" class="text-white hover:text-blue-200 duration-500">Login</a>
             </li>
-            <li class="p-4 ">
-                <a href="{%url 'user:auth_register' %}"> Registrarse </a>
+            <li class="p-4">
+                <a href="{% url 'user:auth_register' %}" class="text-white hover:text-blue-200 duration-500">Registrarse</a>
             </li>
-        {%endif%}   
+        {% endif %}
     </ul>
 </nav>
+
+<script src="{% static 'navbarBASIC-script.js' %}"></script>
+
+  
