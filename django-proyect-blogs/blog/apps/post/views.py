@@ -137,7 +137,7 @@ class PostDetailView(DetailView):
         delete_comment_id = self.request.GET.get('delete_comment')
         if delete_comment_id:
             comment = get_object_or_404(Comment, id=delete_comment_id)
-            # Permitimos solo si el usuario logueado tiene permiso para eliminar el comentario
+            # Permitimos solo si el usuario logueado tiene permiso para eliminar el comentario TODO: accion colaborador no esta
             if ( comment.author == self.request.user or (comment.post.author == self.request.user and not comment.author.is_admin and not comment.author.is_superuser) or self.request.user.is_superuser or self.request.user.groups.filter( name='administrator').exists()):
                         # Es autor del comentario, Es autor del post, pero el comentario no es de un admin o un superuser
                 context['deleting_comment_id'] = comment.id
@@ -222,6 +222,7 @@ class Recent_Post_View(ListView):
     model = Post
     template_name = 'post/category_recent.html'
     context_object_name = 'posts'
+    paginate_by = 5
 
     def get_queryset(self):
         #retorno una lista  de objetos post ordenados por fecha reciente
@@ -274,3 +275,4 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         is_admin = self.request.user.is_superuser or self.request.user.groups.filter(name='administrator').exists()
 
         return is_comment_author or is_post_author or is_admin
+

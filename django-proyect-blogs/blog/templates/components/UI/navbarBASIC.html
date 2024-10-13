@@ -24,7 +24,7 @@
             
             
             <li class="p-4 ">
-                <a href="{%url 'user:user_profile' %}"> Perfil</a>
+                <a href="{%url 'user:user_profile' user.id %}?next={{ request.path }}"> Perfil</a>
             </li>
             
             <li class="p-4 ">
@@ -39,7 +39,7 @@
                 <a href="{%url 'admin:index' %}"> Login ADMIN </a>
             </li>
             <li class="p-4 ">
-                <a href="{%url 'user:auth_login' %}?next={{ request.path }}"> Login </a>
+                <a href="{%url 'user:auth_login'%}?next={{ request.path }}"> Login </a>
             </li>
             <li class="p-4 ">
                 <a href="{%url 'user:auth_register' %}"> Registrarse </a>

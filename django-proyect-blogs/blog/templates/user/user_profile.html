@@ -7,7 +7,11 @@
 
 
 {% block content %}
-    <h1> PERFIL USUARIO </h1>
+    <p>Nombre Usuario: {{ user.username }}</p>
+    <p>Email: {{ user.email }}</p>
+    <p>Fecha de registro: {{ user.date_joined }}</p>
+
+    <p>Avatar:<img src="{{ user.avatar.url }}" alt="Avatar de {{ user.username }}" class="w-[400px] object-cover aspect-[16/9]"></p>
 {% endblock content %}
 
 
