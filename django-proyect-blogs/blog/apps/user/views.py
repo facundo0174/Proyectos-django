@@ -8,24 +8,61 @@ from django.contrib.auth.models import Group
 from apps.user.models import usuario
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden
 
 class UserProfileView(LoginRequiredMixin,DetailView):
     model = usuario
     template_name='user/user_profile.html'
     context_object_name='user'
     login_url = reverse_lazy('user:auth_login')
-
-
+    #solo el usuario autenticado ACTUAL podra realizar esta vista, si quiere ver el perfil de otro usuario
     def get_object(self):
-        #obtengo el id de usuario del url, y busco en la BD el objeto usuario segun el modelo usuario de la tabla y lo traigo
-        pk = self.kwargs['pk']
-        return get_object_or_404(usuario, pk=pk)
+        #obtengo el id de usuario del url, y busco en la BD el objeto usuario segun el modelo usuario actual de la tabla y lo traigo
+        user = self.request.user #esto me asegura que solo el propio usuario pueda ver su perfil y nadie mas
+        return get_object_or_404(usuario, pk=user.pk)
     
-class UserUpdateView(UpdateView):
+class UserUpdateView(LoginRequiredMixin,UpdateView):
+    model = usuario
+    form_class = RegisterForm
+    context_object_name='user'
+    login_url = reverse_lazy('user:auth_login')
     template_name='user/user_update.html'
 
-class UserDeleteView(DeleteView):
+    def get_object(self):
+        #obtengo el id de usuario del url, y busco en la BD el objeto usuario segun el modelo usuario actual de la tabla y lo traigo
+        user = self.request.user
+        return get_object_or_404(usuario, pk=user.pk)
+        
+    def form_valid(self,form):
+        form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("form_invalid is called")  # Print para depuración
+        print(form.errors)
+        return super().form_invalid(form)
+    
+    def get_success_url(self):
+        # El reverse_lazy es para que no se ejecute hasta que se haya guardado el post
+        return reverse_lazy('user:user_profile', kwargs={'pk': self.object.id})
+
+
+class UserDeleteView(LoginRequiredMixin,DeleteView):
+    model = usuario
     template_name='user/user_delete.html'
+    success_url = reverse_lazy('index')
+    
+    # aseguramos de que solo el usuario autenticado actual pueda eliminar la cuenta, osea a si mismo
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    # para no eliminarce a si mismo desde el template y eres administrador o colaborador
+    def delete(self, request, *args, **kwargs):
+        user = self.get_object()
+        # Lógica adicional: asegurarse de que el usuario no sea un superusuario o tenga roles especiales
+        if user.is_superuser or user.is_collaborator:
+            return HttpResponseForbidden("No puedes eliminate eres superusuario/colaborador, contacta a administracion.")
+        return super().delete(request, *args, **kwargs)
 
 class RegisterView(CreateView):
     template_name = 'auth/auth_register.html'
@@ -52,7 +89,7 @@ class LoginView(LoginViewDjango):
         if next_url:
             return next_url
         
-        return reverse_lazy('home')
+        return reverse_lazy('index')
     
 class LogoutView(LogoutViewDjango):
     
@@ -61,5 +98,5 @@ class LogoutView(LogoutViewDjango):
         if next_url:
             return next_url
         
-        return reverse_lazy('home')
+        return reverse_lazy('index')
     
