@@ -1,14 +1,14 @@
-<nav class = "bg-green-300">
+<nav class="bg-gradient-to-br via-gray-800 from-gray-700 to-black"> 
     <ul class="flex flex-wrap text-wrap justify-center text-2xl font-black">
-        {%for category in categories%}
+        {% for category in categories %}
             <li class="p-5">
-                {%if category.category_name != 'Recientes'  %}
-                <a href="{%url 'post:post_by_category' slug=category.slug %}"> {{category.category_name}} </a> 
-                {%endif%}
+                {% if category.category_name != 'Recientes' %}
+                <a href="{% url 'post:post_by_category' slug=category.slug %}" class="text-white transition-colors duration-300 hover:text-blue-500"> {{ category.category_name }} </a>
+                {% endif %}
             </li>
-        {%endfor%}
-            <li class="p-5">
-                <a href="{%url 'post:category_recent' %}"> Recientes </a> 
-            </li>
+        {% endfor %}
+        <li class="p-5">
+            <a href="{% url 'post:category_recent' %}" class="text-white transition-colors duration-300 hover:text-blue-500"> Recientes </a>
+        </li>
     </ul>
 </nav>

@@ -72,12 +72,12 @@ class PostDeleteView(DeleteView):
 
 class PostListView(ListView):
     model = Post
-    template_name = 'post/category_recientes.html'
+    template_name = 'post/category_recent.html'
     context_object_name = 'posts'
-    paginate_by = 5
+    paginate_by = 5  # Número de posts por página
 
     def get_queryset(self):
-        # Ordena los post por fecha reciente mediante orm django a la bd y los retorna
+        # Ordena los posts por fecha reciente y los retorna
         return Post.objects.order_by('-creation_date')
     
     def get_context_data(self, **kwargs):
@@ -85,6 +85,7 @@ class PostListView(ListView):
         context['posts'] = Post.objects.all()  # trae la lista de objetos ordenados en este caso los post al view como contexto para usarlos en el template
         # OJO solo a esta view los trae como contexto, si usaramos otra view este contexto de post ordenados por fecha desapareceria.
         return context
+
     
 class PostCreateView(CreateView):
     model = Post
@@ -199,21 +200,23 @@ class PostByCategoryView(ListView):
     model = Post
     template_name = 'post/post_by_category.html'
     context_object_name = 'posts'
+    paginate_by = 5  # Asegúrate de incluir esta línea
 
     def get_queryset(self):
         # Obtén el slug de la URL y busca la categoría correspondiente
         category_slug = self.kwargs['slug']
         category = get_object_or_404(Category, slug=category_slug)
-        if category_slug == 'Recientes': #sencible a mayusculas y minusculas
-            return Post.objects.all().order_by('-creation_date') #ordeno a todos por fecha reciente
+        if category_slug.lower() == 'recientes':  # Se sensible a mayúsculas y minúsculas
+            return Post.objects.all().order_by('-creation_date')  # Ordena todos por fecha reciente
         else:
-            return Post.objects.filter(category=category).order_by('-creation_date') # ordeno segun categoria y por fecha reciente
+            return Post.objects.filter(category=category).order_by('-creation_date')  # Ordena según categoría y por fecha reciente
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = get_object_or_404(Category, slug=self.kwargs['slug'])
         context['categories'] = Category.objects.all()  # Agrega todas las categorías al contexto
         return context
+
 
 class AcercaDe(TemplateView):
     template_name='post/acerca_de.html'

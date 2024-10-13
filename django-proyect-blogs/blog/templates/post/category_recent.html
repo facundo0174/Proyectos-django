@@ -1,45 +1,59 @@
 {% extends 'layouts/general_layouts.html' %}
-{% block title %} Post | BLOG TEGNOLOGICO{% endblock title %}
+{% block title %}Post | BLOG TEGNOLOGICO{% endblock title %}
 {% block content %}
-
-<div class="grid grid-cols-1 gap-6">
-    {% for post in object_list %}
-        <div class="bg-gray-800 text-white rounded-2xl p-6">
-            <h3 class="text-2xl uppercase font-bold">{{ post.title }}</h3>
-            <p>{{ post.content }}</p>
-            <p>Publicado por: <strong class="font-bold">{{ post.author.username }}
-            </strong></p>
-            <p>Fecha de publicación: {{ post.creation_date }}</p>
-            <p>Comentarios permitidos: {{ post.allow_comments|yesno:"Si,No" }}</p>
-            <div class="flex gap-2 mt-8">
-            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_detail' slug=post.slug %}" >Ver post</a>
-            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
-            </div>
+{% load static %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for post in posts %}  {# Cambiado de object_list a posts #}
+    <div class="relative overflow-hidden group transform transition duration-300 ease-in-out hover:scale-105 rounded-xl">
+        <!-- Imagen del post como fondo con bordes redondeados -->
+        {% if post.images.exists %}
+            {% with post.images.first as image %}
+                <a href="{% url 'post:post_detail' slug=post.slug %}">
+                    <div class="w-full h-72 bg-cover bg-center transform transition duration-500 ease-in-out group-hover:scale-110 rounded-xl"
+                         style="background-image: url('{{ image.image.url }}');">
+                    </div>
+                </a>
+            {% endwith %}
+        {% else %}
+            <!-- Imagen por defecto si no hay imágenes -->
+            <a href="{% url 'post:post_detail' slug=post.slug %}">
+                <div class="w-full h-72 bg-cover bg-center transform transition duration-500 ease-in-out group-hover:scale-110 rounded-xl"
+                     style="background-image: url('{% static 'post/default/post_default.png' %}');">
+                </div>
+            </a>
+        {% endif %}
+        
+        <!-- Datos del post con fondo semitransparente y bordes redondeados -->
+        <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-60 p-4 text-white rounded-b-xl">
+            <p>{{ post.creation_date|date:"d M Y" }} . {{ post.author.username }}</p>
+            <h3 class="text-xl font-bold">{{ post.title }}</h3>
         </div>
-        {% empty %}
-            <h1 class = "px-3 pt-3 pb-3 font-medium text-3xl ">No hay posts en esta categoría.</h1>
+    </div>
     {% endfor %}
-    
 </div>
 
-<div class="bg-green-400 text-gray-800 rounded-2xl p-6 flex justify-center items-center">
-        {% if page_obj.has_previous %}
-            <div class="flex space-x-4">
-                <a href="?page=1" class="text-black-600 hover:underline" >First</a>
-                <a href="?page={{ page_obj.previous_page_number }}" class="text-blue-600 hover:underline px-2" >Previous</a>
-            </div>
-        {% endif %}
+<div class="bg-transparent p-6 flex justify-center items-center">
+    {% if page_obj.has_previous %}
+        <div class="flex space-x-4">
+            <a href="?page=1" class="bg-gray-300 text-gray-800 rounded-lg px-4 py-2 hover:bg-gray-400 hover:text-white">Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="bg-gray-300 text-gray-800 rounded-lg px-4 py-2 hover:bg-gray-400 hover:text-white">Anterior</a>
+        </div>
+    {% endif %}
 
-        {% if page_obj.has_next %}
-            <div class="flex space-x-4">
-                <a href="?page={{ page_obj.next_page_number }}" class="text-blue-600 hover:underline px-2">Next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}" class="text-black-600 hover:underline">Last</a>
-            </div>
-        {% endif %}
+    {% if page_obj.has_next %}
+        <div class="flex space-x-4">
+            <a href="?page={{ page_obj.next_page_number }}" class="bg-gray-300 text-gray-800 rounded-lg px-4 py-2 hover:bg-gray-400 hover:text-white">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="bg-gray-300 text-gray-800 rounded-lg px-4 py-2 hover:bg-gray-400 hover:text-white">Última</a>
+        </div>
+    {% endif %}
 </div>
 
-<div class="bg-yellow-400 text-orange-800 p-2 flex justify-center items-center pt-5">
-        <span class="pt-5">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+<div class="bg-gray-300 text-gray-800 p-4 rounded-lg flex justify-center items-center">
+    <span class="text-lg font-semibold">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
 </div>
+
 
 {% endblock content %}
+
+

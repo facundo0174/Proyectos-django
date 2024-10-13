@@ -8,8 +8,10 @@
 
 {%block content_layout%} 
     {%include 'components/commons/headers.html'%}
-    <main> 
-        {%block content %} {%endblock content %}
+    <main class="flex justify-center min-h-[calc(100dvh-112px)] bg-slate-600 text-gray-800">
+        <div class="container mx-4 md:mx-8 lg:mx-40 py-10">
+            {% block content %}{% endblock content %}
+        </div>
     </main>
     {%include 'components/commons/footers.html'%}
 {%endblock content_layout%}
