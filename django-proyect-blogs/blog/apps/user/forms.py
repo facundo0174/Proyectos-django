@@ -13,5 +13,9 @@ class LoginForm(AuthenticationForm):
     # Django form trabaja con widgets
     # Los widgets son los elementos que se renderizan en el HTML
     # Pueden recibir atributos como clases, id, placeholder, etc
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}),)
     
+class UpdateForm(forms.ModelForm):
+    class Meta:
+        model = usuario
+        fields = ('username', 'email', 'alias')
+

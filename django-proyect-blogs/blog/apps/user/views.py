@@ -2,7 +2,7 @@ from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView as LoginViewDjango, LogoutView as LogoutViewDjango
-from apps.user.forms import RegisterForm, LoginForm
+from apps.user.forms import RegisterForm, LoginForm, UpdateForm
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 from apps.user.models import usuario
@@ -23,7 +23,7 @@ class UserProfileView(LoginRequiredMixin,DetailView):
     
 class UserUpdateView(LoginRequiredMixin,UpdateView):
     model = usuario
-    form_class = RegisterForm
+    form_class = UpdateForm
     context_object_name='user'
     login_url = reverse_lazy('user:auth_login')
     template_name='user/user_update.html'
@@ -31,7 +31,12 @@ class UserUpdateView(LoginRequiredMixin,UpdateView):
     def get_object(self):
         #obtengo el id de usuario del url, y busco en la BD el objeto usuario segun el modelo usuario actual de la tabla y lo traigo
         user = self.request.user
-        return get_object_or_404(usuario, pk=user.pk)
+        return user
+    
+    '''def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = get_object_or_404(usuario, pk=self.kwargs['pk'])
+        return super().get_context_data(**kwargs)'''
         
     def form_valid(self,form):
         form.save()
@@ -45,7 +50,6 @@ class UserUpdateView(LoginRequiredMixin,UpdateView):
     def get_success_url(self):
         # El reverse_lazy es para que no se ejecute hasta que se haya guardado el post
         return reverse_lazy('user:user_profile', kwargs={'pk': self.object.id})
-
 
 class UserDeleteView(LoginRequiredMixin,DeleteView):
     model = usuario
