@@ -13,7 +13,11 @@
             <p>Comentarios permitidos: {{ post.allow_comments|yesno:"Si,No" }}</p>
             <div class="flex gap-2 mt-8">
             <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_detail' slug=post.slug %}" >Ver post</a>
-            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
+            {% if user.is_authenticated %}
+                {% if user.id == post.author.id or user.is_collaborator or user.is_superuser %}
+                    <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
+                {% endif %}
+            {% endif %}
             </div>
         </div>
         {% empty %}

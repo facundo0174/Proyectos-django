@@ -2,7 +2,7 @@ from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView as LoginViewDjango, LogoutView as LogoutViewDjango
-from apps.user.forms import RegisterForm, LoginForm, UpdateForm
+from apps.user.forms import RegisterForm, LoginForm, UserUpdateForm
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 from apps.user.models import usuario
@@ -23,7 +23,7 @@ class UserProfileView(LoginRequiredMixin,DetailView):
     
 class UserUpdateView(LoginRequiredMixin,UpdateView):
     model = usuario
-    form_class = UpdateForm
+    form_class = UserUpdateForm
     context_object_name='user'
     login_url = reverse_lazy('user:auth_login')
     template_name='user/user_update.html'
@@ -33,11 +33,6 @@ class UserUpdateView(LoginRequiredMixin,UpdateView):
         user = self.request.user
         return user
     
-    '''def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = get_object_or_404(usuario, pk=self.kwargs['pk'])
-        return super().get_context_data(**kwargs)'''
-        
     def form_valid(self,form):
         form.save()
         return super().form_valid(form)

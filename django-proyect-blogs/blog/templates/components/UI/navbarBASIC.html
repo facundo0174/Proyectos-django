@@ -5,7 +5,7 @@
         </li>
         {% if user.is_authenticated %}
             <strong class="p-4 ">welcome {{ user.username }}</strong>
-            {% if user.is_superuser or user.is_staf or user.is_collaborator %} 
+            {% if user.is_superuser or user.is_collaborator %} 
 
                 <li class="p-4 ">
                 <a href="{%url 'post:post_create' %}"> Publicar </a>

@@ -4,6 +4,19 @@
 <h1 class = "px-3 pt-3 pb-3 font-medium text-3xl"> Noticias {{category.category_name}}</h1>
 <div class="grid grid-cols-1 gap-6">
 
+    <div class="flex justify-between mb-4">
+            <div>
+                <!-- ordenar por fecha -->
+                <a href="?orden=Reciente" class="btn btn-primary {% if orden_actual == 'Reciente' %}active{% endif %}">Más Recientes</a>
+                <a href="?orden=Antiguo" class="btn btn-secondary {% if orden_actual == 'Antiguo' %}active{% endif %}">Más Antiguos</a>
+            </div>
+            <div>
+                <!-- ordenar por título -->
+                <a href="?orden=Alfabetico-ascendente" class="btn btn-primary {% if orden_actual == 'Alfabetico-ascendente' %}active{% endif %}">Alfabético Ascendente</a>
+                <a href="?orden=Alfabetico-descendente" class="btn btn-secondary {% if orden_actual == 'Alfabetico-descendente' %}active{% endif %}">Alfabético Descendente</a>
+            </div>
+        </div>
+
     {% for post in object_list %}
         <div class="bg-gray-800 text-white rounded-2xl p-6">
             <h3 class="text-2xl uppercase font-bold">{{ post.title }}</h3>
@@ -13,9 +26,15 @@
             <p>Fecha de publicación: {{ post.creation_date }}</p>
             <p>Comentarios permitidos: {{ post.allow_comments|yesno:"Si,No" }}</p>
             <div class="flex gap-2 mt-8">
-            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_detail' slug=post.slug %}" >Ver post</a>
-            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
+                <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_detail' slug=post.slug %}" >Ver post</a>
+                {% if user.is_authenticated  %}
+                    {% if user.id == post.author.id or user.is_collaborator or user.is_superuser %}
+                        <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
+                    {%endif%}
+                {% endif %}
             </div>
+
+            
         </div>
         {% empty %}
             <h1 class = "px-3 pt-3 pb-3 font-medium text-3xl ">No hay posts en esta categoría.</h1>

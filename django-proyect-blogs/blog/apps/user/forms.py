@@ -14,7 +14,7 @@ class LoginForm(AuthenticationForm):
     # Los widgets son los elementos que se renderizan en el HTML
     # Pueden recibir atributos como clases, id, placeholder, etc
     
-class UpdateForm(forms.ModelForm):
+class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = usuario
         fields = ('username', 'email', 'alias')
