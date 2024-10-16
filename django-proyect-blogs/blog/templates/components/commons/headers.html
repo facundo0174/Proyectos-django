@@ -1,5 +1,20 @@
-<header>
-    <div class ="bg-blue-600 text-2xl"> Noticias | Tegnologicas (podria ir una img aca) {%include 'components/UI/navbarBASIC.html'%} </div>
-    <div class = "text-red-400"> segundo nav (el texto esta para saber donde empieza nomas podria ir img o no estar) </div>
-    {% include 'components/UI/navBarSecciones.html' %}
+{% load static %}
+<header class="bg-gradient-to-br via-gray-800 from-gray-700 to-black">
+    <div class="flex items-center justify-between p-1"> 
+        <div class="flex-grow"></div> <!-- Espacio flexible para empujar el botón a la derecha -->
+        <button id="menu-toggle" class="text-white md:hidden">
+            <!-- Icono de menú -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div id="nav-menu" class="hidden md:block">
+        {% include 'components/UI/navbarBASIC.html' %}
+        <div class="text-red-400">Segundo nav (el texto está para saber dónde empieza, podría ir img o no estar)</div>
+        {% include 'components/UI/navBarSecciones.html' %}
+    </div>
 </header>
+
+<script src="{% static 'js/headers-script.js' %}"></script>
