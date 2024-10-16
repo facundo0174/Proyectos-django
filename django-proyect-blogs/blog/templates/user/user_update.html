@@ -5,12 +5,24 @@
     USER | UPDATE
 {% endblock title %}
 
-
 {% block content %}
-    <h1> User updates </h1>
+    <div class="flex flex-col justify-center items-center">
+        <h1 class="text-center text-2xl mb-6">Actualizar Perfil</h1>
+        <form class="flex flex-col max-w-[400px] gap-4" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}  <!-- Muestra errores generales, si los hay -->
+            {{ form.username.errors }}    <!-- Muestra errores específicos del campo -->
+            <label for="username">Nombre de Usuario: </label>{{ form.username }}  <!-- Campo de nombre de usuario -->
+            {{ form.alias.errors }}  <!-- Muestra errores específicos del campo -->
+            <label for="alias">Alias: </label> {{ form.alias }}  <!-- Campo de alias -->
+            <label> Avatar actual: <label>
+                <img src="{{user.avatar.url}}" alt="Avatar Actual" class="w-[400px] object-cover aspect-[16/9]">
+                <input type="file" name="avatar" id="avatar" class="form-control">
+                {{ form.avatar.errors }}
+            <button type="submit" class="w-full bg-green-400 py-2 rounded-lg">Actualizar</button>
+        </form>
+    </div>
 {% endblock content %}
-
-
 
 
 

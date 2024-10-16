@@ -4,6 +4,20 @@
 {% load static %}
 <h1 class="px-3 pt-3 pb-3 font-medium text-3xl"> Noticias {{ category.category_name }}</h1>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <!-- botones para realizar un ordenado por fecha y nombre ascendentes o descendentes -->
+  <div class="flex justify-between mb-4">
+            <div>
+                <!-- ordenar por fecha -->
+                <a href="?orden=Reciente" class="btn btn-primary {% if orden_actual == 'Reciente' %}active{% endif %}">Más Recientes</a>
+                <a href="?orden=Antiguo" class="btn btn-secondary {% if orden_actual == 'Antiguo' %}active{% endif %}">Más Antiguos</a>
+            </div>
+            <div>
+                <!-- ordenar por título -->
+                <a href="?orden=Alfabetico-ascendente" class="btn btn-primary {% if orden_actual == 'Alfabetico-ascendente' %}active{% endif %}">Alfabético Ascendente</a>
+                <a href="?orden=Alfabetico-descendente" class="btn btn-secondary {% if orden_actual == 'Alfabetico-descendente' %}active{% endif %}">Alfabético Descendente</a>
+            </div>
+     </div>
+  
     {% for post in posts %}  {# Cambiado de object_list a posts #}
     <div class="relative overflow-hidden group transform transition duration-300 ease-in-out hover:scale-105 rounded-xl">
         <!-- Imagen del post como fondo con bordes redondeados -->
@@ -28,6 +42,7 @@
         <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-60 p-4 text-white rounded-b-xl">
             <p>{{ post.creation_date|date:"d M Y" }} . {{ post.author.username }}</p>
             <h3 class="text-xl font-bold">{{ post.title }}</h3>
+
         </div>
     </div>
     {% endfor %}

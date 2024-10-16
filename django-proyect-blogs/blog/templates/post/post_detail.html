@@ -17,8 +17,12 @@
 <p>Fecha de publicación: {{ post.creation_date }}</p>
 <p>Comentarios permitidos: {{ post.allowed_comments|yesno:"Si,No" }}</p>
 <div class="flex mt-8 gap-4">
-    <a class="bg-blue-500 text-white p-2 rounded-lg" href="{% url 'post:post_update' slug=post.slug %}" >Editar post</a>
-    <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
+    {% if user.is_authenticated %}
+        {% if user.id == post.author.id or user.is_collaborator or user.is_superuser %}
+            <a class="bg-blue-500 text-white p-2 rounded-lg" href="{% url 'post:post_update' slug=post.slug %}" >Editar post</a>
+            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
+        {% endif %}
+    {% endif %}
 </div>
 
 <!-- Listado de comentarios -->
