@@ -3,37 +3,36 @@
 {% block content %}
 {% load static %}
 <h1 class="px-3 pt-3 pb-3 font-medium text-3xl"> Noticias {{ category.category_name }}</h1>
+<!-- botones para realizar un ordenado por fecha y nombre ascendentes o descendentes -->
+    <div class="flex justify-between mb-4">
+            <div>
+                    <!-- ordenar por fecha -->
+                    <a href="?orden=reciente" class="btn btn-primary {% if orden_actual == 'reciente' %}active{% endif %}">Más Recientes</a>
+                    <a href="?orden=antiguo" class="btn btn-secondary {% if orden_actual == 'antiguo' %}active{% endif %}">Más Antiguos</a>
+                </div>
+                <div>
+                    <!-- ordenar por título -->
+                    <a href="?orden=alfabetico-ascendente" class="btn btn-primary {% if orden_actual == 'alfabetico-ascendente' %}active{% endif %}">Alfabético Ascendente</a>
+                    <a href="?orden=alfabetico-descendente" class="btn btn-secondary {% if orden_actual == 'alfabetico-descendente' %}active{% endif %}">Alfabético Descendente</a>
+                </div>
+    </div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  <!-- botones para realizar un ordenado por fecha y nombre ascendentes o descendentes -->
-  <div class="flex justify-between mb-4">
-            <div>
-                <!-- ordenar por fecha -->
-                <a href="?orden=Reciente" class="btn btn-primary {% if orden_actual == 'Reciente' %}active{% endif %}">Más Recientes</a>
-                <a href="?orden=Antiguo" class="btn btn-secondary {% if orden_actual == 'Antiguo' %}active{% endif %}">Más Antiguos</a>
-            </div>
-            <div>
-                <!-- ordenar por título -->
-                <a href="?orden=Alfabetico-ascendente" class="btn btn-primary {% if orden_actual == 'Alfabetico-ascendente' %}active{% endif %}">Alfabético Ascendente</a>
-                <a href="?orden=Alfabetico-descendente" class="btn btn-secondary {% if orden_actual == 'Alfabetico-descendente' %}active{% endif %}">Alfabético Descendente</a>
-            </div>
-     </div>
-  
+    
     {% for post in posts %}  {# Cambiado de object_list a posts #}
     <div class="relative overflow-hidden group transform transition duration-300 ease-in-out hover:scale-105 rounded-xl">
         <!-- Imagen del post como fondo con bordes redondeados -->
         {% if post.images.exists %}
             {% with post.images.first as image %}
                 <a href="{% url 'post:post_detail' slug=post.slug %}">
-                    <div class="w-full h-72 bg-cover bg-center transform transition duration-500 ease-in-out group-hover:scale-110 rounded-xl"
-                         style="background-image: url('{{ image.image.url }}');">
+                    <div class="w-full h-72 bg-cover bg-center transform transition duration-500 ease-in-out group-hover:scale-110 rounded-xl"style="background-image: url('{{ image.image.url }}');">
                     </div>
                 </a>
             {% endwith %}
         {% else %}
             <!-- Imagen por defecto si no hay imágenes -->
             <a href="{% url 'post:post_detail' slug=post.slug %}">
-                <div class="w-full h-72 bg-cover bg-center transform transition duration-500 ease-in-out group-hover:scale-110 rounded-xl"
-                     style="background-image: url('{% static 'post/default/post_default.png' %}');">
+                <div class="w-full h-72 bg-cover bg-center transform transition duration-500 ease-in-out group-hover:scale-110 rounded-xl"style="background-image: url('{% static 'post/default/post_default.png' %}');">
                 </div>
             </a>
         {% endif %}
