@@ -12,6 +12,7 @@ class vistaindex(TemplateView):
         
 #Es importante que el argumento exception esté presente
 # para que Django lo pueda identificar como un manejador de errores
+
 def not_found_view(request, exception):
     return render(request, 'errors/error_not_found.html', status=404)
 def internal_error_view(request):

@@ -13,6 +13,7 @@ urlpatterns = [
 ]
 
 # Manejadores de errores
+
 handler404 = not_found_view
 handler500 = internal_error_view
 handler403 = forbidden_view
