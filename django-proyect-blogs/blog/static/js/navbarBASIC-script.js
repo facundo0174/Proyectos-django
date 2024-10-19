@@ -1,4 +1,5 @@
-function Menu(e) {
+function Menu(e) { 
+    console.log("Menu icon clicked!");
     let list = document.getElementById('menuList');
     if (e.name === 'menu') {
         e.name = "close";

@@ -5,6 +5,7 @@ debera linkear/vincular un url para que pueda DEVOLVER la respuesta de forma vis
 #from django.http import HttpResponse
 #import datetime
 from django.views.generic import TemplateView
+
 # SIEMPRE con httpresponse se recibe como parametro una request o solicitud
 '''
 def saludo(request):
@@ -51,7 +52,34 @@ siendo 2070 el año en el que se quiera saber que edad tendra la persona, django
             </body>
         </html> %(anio_act,edad_futura)
     return HttpResponse(documento)'''
+from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404
+from apps.post.models import Post, Category  # Asegúrate de importar tu modelo Post
 
-class vistaindex(TemplateView):
-        template_name='index.html'
+class VistaIndex(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         
+        # Obtiene el post destacado
+        context['featured_post'] = Post.objects.filter(is_featured=True).first()
+        
+        # Obtiene los dos posts más populares basados en "likes"
+        context['popular_posts'] = Post.objects.order_by('-likes')[:2]
+        
+        # Obtiene los seis posts más recientes
+        context['recent_posts'] = Post.objects.order_by('-creation_date')[:6]
+        
+        # Obtiene todas las categorías para mostrarlas en el contexto
+        context['categories'] = Category.objects.all()  # Obtiene todas las categorías
+
+        # Filtra los posts por categoría si se especifica
+        category_slug = self.request.GET.get('category_slug')
+        if category_slug:
+            selected_category = get_object_or_404(Category, slug=category_slug)
+            context['category_posts'] = Post.objects.filter(category=selected_category).order_by('-creation_date')
+        else:
+            context['category_posts'] = Post.objects.none()  # No muestra posts si no hay categoría seleccionada
+
+        return context

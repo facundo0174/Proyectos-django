@@ -17,13 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
-from blog.views import vistaindex
+from blog.views import VistaIndex
+
 
 #si tienes una view como clase debes hace as view() siempre
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',vistaindex.as_view(),name='index'),
+    path('',VistaIndex.as_view(),name='index'),
     path('',include('apps.post.urls')),
     path('',include('apps.user.urls')),
 ]

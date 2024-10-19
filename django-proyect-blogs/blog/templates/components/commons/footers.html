@@ -1,5 +1,12 @@
-<footer class="bg-gradient-to-br via-gray-800 from-gray-700 to-black">
-    <p class ="text-red-400"> footer hecho en clase</p>
-    <div class ="text-red-400"> nav del footer</div>
-    {% include 'components/UI/navBarFooter.html' %} 
+{% load static %}
+<footer class="bg-gradient-to-br via-gray-800 from-gray-700 to-black p-4">
+    <p class="text-red-400">Footer hecho en clase</p>
+    <div class="text-red-400">Nav del footer</div>
+    {% include 'components/UI/navBarFooter.html' %}
+
+    <div class="flex justify-start mt-4 space-x-4">
+        <img src="{% static 'assets/logo1.png' %}" alt="Logo 1" class="h-10 w-auto">
+        <img src="{% static 'assets/logo2.png' %}" alt="Logo 2" class="h-10 w-auto">
+        <img src="{% static 'assets/logo3.png' %}" alt="Logo 3" class="h-10 w-auto">
+    </div>
 </footer>

@@ -1,21 +1,25 @@
 {% load static %}
 
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> {%block title_layout%} {%endblock title_layout%} </title>
-    {% block extrahead %}  {% endblock extrahead %}
+    <title>{% block title_layout %} {% endblock title_layout %}</title>
+    
+    {% block extrahead %}  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Agrega Font Awesome -->
+    {% endblock extrahead %}
+    
     <script src="https://cdn.tailwindcss.com"></script>
     
     {% comment %}
-        <link rel="shortcut icon" href="{%static 'assets/favicon.ico'%}" type="image/x-icon">
+        <link rel="shortcut icon" href="{% static 'assets/favicon.ico' %}" type="image/x-icon">
         para el icono de pestaña
     {% endcomment %}
         
 </head>
-<body class="min-w-[280px]">
-    {% block content_layout %} {% endblock content_layout %}
+<body class="m-0 p-0">
+    {% block content_layout %}{% endblock content_layout %}
 </body>
 </html>

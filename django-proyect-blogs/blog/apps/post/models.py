@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils import timezone#devuelve la fecha y hora
 from django.utils.text import slugify
 import os
-
+from django.contrib.auth.models import User
 # Create your models here.
 class Category(models.Model):
     id= models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False,unique=True)
@@ -35,6 +35,9 @@ class Post(models.Model):
     allowed_comments=models.BooleanField(default=True,editable=True)
     category = models.ForeignKey(Category, on_delete= models.CASCADE, related_name="category", null=False)#se utilizara para obtener todos los post de x categoria segun lo nescesario
     # CATEGORY DEBE SER SI O SI FALSE; PERO SE DEJO EN TRUE PARA REALIZAR UN PEQUEÑO MIGRATE DE PRUEBA
+    views = models.IntegerField(default=0)  # Contador de visualizaciones
+    likes = models.IntegerField(default=0)   # Contador de me gusta
+    is_featured = models.BooleanField(default=False)
     def __str__(self):
         return(self.title)
     
@@ -64,6 +67,18 @@ class Post(models.Model):
             unique_slug = f'{slug}-{num}'
             num+=1
         return unique_slug
+    
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'post')  # Asegura que cada usuario solo pueda dar un "me gusta" por post
+
+class View(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

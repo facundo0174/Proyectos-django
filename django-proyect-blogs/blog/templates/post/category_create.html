@@ -1,15 +1,20 @@
 {% extends 'layouts/general_layouts.html' %}
 {% block title %} Crear Categoria | BLOG TEGNOLOGICO{% endblock title %}
 {% block content %}
-    <h2>Crear nueva categoria</h2>
-    <form method="post" enctype="multipart/form-data">
+    <h2 class="text-white text-2xl font-semibold text-center mb-6">Crear nueva categoría</h2>
+    <form method="post" enctype="multipart/form-data" class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
         {% csrf_token %}
         <div class="flex flex-col gap-4">
-            <p class="flex flex-col">{{ form.category_name.label_tag }} {{ form.category_name }}</p>
-            {%if form.category_name.errors%}
-                <span class="text-red-500">{{ form.category_name.errors }}</span>
-            {%endif%}
+            <!-- Nombre de la categoría -->
+            <div class="flex flex-col">
+                <label class="text-white text-sm font-semibold" for="id_category_name">{{ form.category_name.label }}</label>
+                <input type="text" id="id_category_name" name="category_name" value="{{ form.category_name.value }}" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" placeholder="Escribe el nombre de la categoría aquí..." />
+                {% if form.category_name.errors %}
+                    <span class="text-red-500">{{ form.category_name.errors }}</span>
+                {% endif %}
+            </div>
         </div>
-    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg"> Crear Categoria </button>
+        <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 transition duration-300 mt-6">Crear Categoría</button>
     </form>
 {% endblock content %}
+
