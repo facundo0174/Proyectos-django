@@ -8,12 +8,7 @@
     <title> {%block title_layout%} {%endblock title_layout%} </title>
     {% block extrahead %}  {% endblock extrahead %}
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    {% comment %}
-        <link rel="shortcut icon" href="{%static 'assets/favicon.ico'%}" type="image/x-icon">
-        para el icono de pestaña
-    {% endcomment %}
-        
+    <link rel="shortcut icon" href="{%static 'assets/favicon.ico'%}" type="image/x-icon">     
 </head>
 <body class="min-w-[280px]">
     {% block content_layout %} {% endblock content_layout %}
