@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
-from blog.views import vistaindex, not_found_view, internal_error_view,forbidden_view
+from blog.views import vistaindex, not_found_view, internal_error_view, forbidden_view
 
 #si tienes una view como clase debes hace as view() siempre
 
@@ -11,6 +11,8 @@ urlpatterns = [
     path('',include('apps.post.urls')),
     path('',include('apps.user.urls')),
 ]
+
+# Manejadores de errores
 
 handler404 = not_found_view
 handler500 = internal_error_view

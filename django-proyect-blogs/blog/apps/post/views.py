@@ -73,20 +73,19 @@ class PostDeleteView(LoginRequiredMixin, PermissionRequiredMixin,DeleteView):
 class PostListView(ListView):
     # esta view reprecenta la conjuncion de todas las categorias a la cual retorna la lista de post ordenado por fecha reciente
     model = Post
-    template_name = 'post/category_recientes.html'
+    template_name = 'post/category_recent.html'
     context_object_name = 'posts'
-    paginate_by = 5
+    paginate_by = 5  # Número de posts por página
 
     def get_queryset(self):
-        # Ordena los post por fecha reciente mediante orm django a la bd y los retorna
+        # Ordena los posts por fecha reciente y los retorna
         return Post.objects.order_by('-creation_date')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['posts'] = Post.objects.all()  # trae la lista de objetos ordenados en este caso los post al view como contexto para usarlos en el template
         # OJO solo a esta view los trae como contexto, si usaramos otra view este contexto de post ordenados por fecha desapareceria.
         return context
-    
+
 class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     model = Post
     form_class = NewPostForm
@@ -216,29 +215,27 @@ class PostByCategoryView(ListView):
     model = Post
     template_name = 'post/post_by_category.html'
     context_object_name = 'posts'
+    paginate_by = 5  # Asegúrate de incluir esta línea
 
     def get_queryset(self):
         #obtengo valores de evaluacion del contexto antes de evaluar y renderizar pagina por el url para tomar accion
         queryset = super().get_queryset() 
         # obtengo el string asociado a el orden, si no existe devuelve recientes como valor por defecto
         #este recientes es de post por fecha reciente, el caso de categoria recientes es uno muy especifico
-        orden = self.request.GET.get('orden', 'Recientes')
+        orden = self.request.GET.get('orden', 'recientes')
         # obtego el slug reprecentante de la categoria
         category_slug = self.kwargs['slug']
-        if category_slug == 'Recientes': #sencible a mayusculas y minusculas
-            return Post.objects.all().order_by('-creation_date') #ordeno a todos por fecha reciente
-        else:# ordena/filtra por categoria
-            category = get_object_or_404(Category, slug=category_slug) #busco la categoria o da error
-            queryset = Post.objects.filter(category=category) #ordeno antes de mostrar la vista por categoria los post
-            # a partir de aca ordena por fecha o nombre
-            if orden == 'Reciente':
-                queryset = queryset.order_by('-creation_date')
-            elif orden == 'Antiguo':
-                queryset = queryset.order_by('creation_date')
-            elif orden == 'Alfabetico-ascendente':
-                queryset = queryset.order_by('title')
-            elif orden == 'Alfabetico-descendente':
-                queryset = queryset.order_by('-title')
+        category = get_object_or_404(Category, slug=category_slug) #busco la categoria o da error
+        queryset = Post.objects.filter(category=category) #ordeno antes de mostrar la vista por categoria los post
+        # a partir de aca ordena por fecha o nombre
+        if orden == 'recientes':
+            queryset = queryset.order_by('-creation_date')
+        elif orden == 'antiguo':
+            queryset = queryset.order_by('creation_date')
+        elif orden == 'alfabetico-ascendente':
+            queryset = queryset.order_by('title')
+        elif orden == 'alfabetico-descendente':
+            queryset = queryset.order_by('-title')
         
         return queryset
 
@@ -252,21 +249,6 @@ class PostByCategoryView(ListView):
 
 class AcercaDe(TemplateView):
     template_name='post/acerca_de.html'
-
-class Recent_Post_View(ListView):
-    model = Post
-    template_name = 'post/category_recent.html'
-    context_object_name = 'posts'
-    paginate_by = 5
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context ['user'] = self.request.user #obtengo usuario autenticado para comprobacion a nivel template
-        return context
-
-    def get_queryset(self):
-        #retorno una lista  de objetos post ordenados por fecha reciente
-        return Post.objects.all().order_by('-creation_date') #ordeno a todos por fecha reciente
 
 class CommentCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     model = Comment

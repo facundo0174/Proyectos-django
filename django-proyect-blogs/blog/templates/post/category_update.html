@@ -10,6 +10,8 @@
                 <span class="text-red-500">{{ form.category_name.errors }}</span>
             {%endif%}
     <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg"> Actualizar Categoria </button>
+    
     </form>
+    <a href="{% url 'post:category_list' %}">Cancelar</a>
 {% comment %} <a href="javascript:history.back()">Cancelar</a> TENGO 1 SOLO CAMPO A MODIFICAR {% endcomment %}
 {% endblock content %}

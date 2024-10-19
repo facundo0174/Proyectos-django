@@ -21,6 +21,7 @@
                 {{ form.avatar.errors }}
             <button type="submit" class="w-full bg-green-400 py-2 rounded-lg">Actualizar</button>
         </form>
+        <a href="{% url 'user:user_profile' pk=user.id %}">Cancelar</a>
     </div>
 {% endblock content %}
 
