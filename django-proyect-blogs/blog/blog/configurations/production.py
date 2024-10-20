@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['']
+ALLOWED_HOSTS = ['FacundoG12.pythonanywhere.com']
 
 DATABASES = {
     'default':{
