@@ -147,8 +147,9 @@
         {% endif %}
 
         <!-- Formulario para agregar comentario -->
-        {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
         <p class="text-white text-sm text-center">Comentarios permitidos: {{ post.allowed_comments|yesno:"Si,No" }}</p>
+        {%if post.allowed_comments%}
         <h4 class="text-white text-center text-xl font-semibold mt-6">Agregar un comentario</h4>
 
         <!-- Formulario  -->
@@ -166,11 +167,12 @@
                 Agregar comentario
             </button>
         </form>
-        {% else %}
+        {% endif %}
+    {% else %}
         <p class="text-center text-white mt-4">
             <a href="{% url 'user:auth_login' %}?next={{ request.path }}" class="hover:text-blue-500">Inicia sesión</a> para agregar un comentario.
         </p>
-        {% endif %}
+    {% endif %}
 
     </div>
 

@@ -36,7 +36,7 @@
         {% else %}
             <!-- Imagen por defecto si no hay imágenes -->
             <a href="{% url 'post:post_detail' slug=post.slug %}">
-                <div class="w-full h-72 bg-cover bg-center transform transition duration-500 ease-in-out group-hover:scale-110 rounded-xl"style="background-image: url('{% static 'post/default/post_default.png' %}');">
+                <div class="w-full h-72 bg-cover bg-center transform transition duration-500 ease-in-out group-hover:scale-110 rounded-xl"style="background-image: url('{% static 'post/default/post_default.jpg' %}');">
                 </div>
             </a>
         {% endif %}
