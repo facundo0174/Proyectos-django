@@ -49,14 +49,13 @@ class RegisterForm(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
 
-       username = forms.CharField(
+        username = forms.CharField(
         max_length=254,
         widget=forms.TextInput(attrs={
             'class': 'form-control border border-gray-400 rounded-md py-2 px-3 text-slate-800',
             'placeholder': 'Usuario'
-        }),
-    )
-    password = forms.CharField(
+        }),)
+        password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control border border-gray-400 rounded-md py-2 px-3 text-slate-800',
             'placeholder': 'Contraseña'
