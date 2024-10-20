@@ -117,6 +117,10 @@
             <p class="text-white">No hay posts recientes.</p>
         {% endfor %}
     </div>
+    <!-- Icono flotante de WhatsApp -->
+    <a href="https://api.whatsapp.com/send?text={{ request.build_absolute_uri }}" target="_blank" class="fixed bottom-5 right-5 p-3 rounded-full shadow-lg transition-transform transform hover:scale-110">
+        <img src="{% static 'assets/whatsapp-icon1.png' %}" alt="Compartir en WhatsApp" class="w-12 h-12">
+    </a>
 {% endblock content %}
 
     

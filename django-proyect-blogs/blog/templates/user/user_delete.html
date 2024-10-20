@@ -5,12 +5,14 @@
 {% endblock title %}
 
 {% block content %}
-<div class="flex flex-col items-center text-center">
-    <h1 class="text-2xl mb-6 text-white">{{ user.username }}, ¿Estás seguro de que deseas eliminar tu cuenta?</h1>
-    <form method="post" class="mb-4">
-        {% csrf_token %}
-        <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">Sí, eliminar</button>
-    </form>
-    <a href="{% url 'user:user_profile' pk=user.id %}" class="bg-green-500 text-white py-2 px-4 rounded-lg">Cancelar</a>
+<div class="flex flex-col items-center text-white">
+    <h1 class="text-2xl mb-6 text-center">¿Estás seguro de que deseas eliminar tu cuenta, {{ user.username }}?</h1>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
+        <form method="post" class="mb-4 w-full">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg w-full hover:bg-red-600 transition duration-300">Sí, eliminar</button>
+        </form>
+        <a href="{% url 'user:user_profile' pk=user.id %}" class="bg-green-500 text-white py-2 px-4 rounded-lg w-full text-center hover:bg-green-600 transition duration-300">Cancelar</a>
+    </div>
 </div>
 {% endblock content %}
