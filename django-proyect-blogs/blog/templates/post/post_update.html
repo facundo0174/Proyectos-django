@@ -12,7 +12,7 @@
         <div class="flex flex-col">
             <label class="text-white font-semibold">{{ form.category.label_tag }}</label>
             <div class="bg-gray-700 p-3 rounded-lg border border-gray-600">
-                <select name='category' class="w-full text-black bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
+                <select name='category' class="w-full text-white bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
                     {% for choice in form.category.field.choices %}
                         <option value="{{ choice.0 }}" {% if choice.0 == form.category.value %}selected{% endif %}>{{ choice.1 }}</option>
                     {% endfor %}
@@ -24,7 +24,7 @@
         <div class="flex flex-col">
             <label class="text-white font-semibold">{{ form.title.label_tag }}</label>
             <div class="bg-gray-700 p-3 rounded-lg border border-gray-600">
-                <input type="text" name="title" value="{{ form.title.value }}" class="w-full text-black bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" />
+                <input type="text" name="title" value="{{ form.title.value }}" class="w-full text-white bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" />
             </div>
         </div>
 
@@ -32,7 +32,7 @@
         <div class="flex flex-col">
             <label class="text-gray-200 font-semibold">{{ form.content.label_tag }}</label>
             <div class="bg-gray-700 p-3 rounded-lg border border-gray-600">
-                <textarea name="content" class="w-full text-black bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">{{ form.content.value }}</textarea>
+                <textarea name="content" class="w-full text-white bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">{{ form.content.value }}</textarea>
             </div>
         </div>
 

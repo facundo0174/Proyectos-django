@@ -94,6 +94,6 @@ class LogoutView(LogoutViewDjango):
         next_url = self.request.GET.get('next')
         if next_url:
             return next_url
-        
-        return reverse_lazy('index')
+        else:
+            return reverse_lazy('index')
     

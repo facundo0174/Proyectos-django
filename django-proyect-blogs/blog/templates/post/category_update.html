@@ -19,8 +19,9 @@
             </div>
         </div>
 
-        <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 transition duration-300 mt-6">Actualizar Categoría</button>
+        <div class="flex flex-col gap-4 mt-6">
+            <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 transition duration-300">Actualizar Categoría</button>
+            <a href="{% url 'post:category_list' %}" class="bg-blue-600 text-white p-3 rounded-lg w-full text-center hover:bg-green-500 transition duration-300">Cancelar</a>
+        </div>
     </form>
-
-    <a href="{% url 'post:category_list' %}" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 transition duration-300 mt-6">Cancelar</a>
 {% endblock content %}

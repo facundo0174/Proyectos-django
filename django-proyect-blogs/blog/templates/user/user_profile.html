@@ -1,36 +1,20 @@
 {% extends 'layouts/general_layouts.html' %}
 
-
 {% block title %}
     USER | PROFILE
 {% endblock title %}
 
-
 {% block content %}
+<div class="flex flex-col items-center text-white">
+    <p><img src="{{ user.avatar.url }}" alt="Avatar de {{ user.username }}" class="w-[400px] object-cover aspect-[16/9]"></p>
     <p>Nombre Usuario: {{ user.username }}</p>
     <p>Email: {{ user.email }}</p>
     <p>Fecha de registro: {{ user.date_joined }}</p>
-    <p>Avatar:<img src="{{ user.avatar.url }}" alt="Avatar de {{ user.username }}" class="w-[400px] object-cover aspect-[16/9]"></p>
+
+    
     <div class="flex mt-8 gap-4">
-    <a class="bg-blue-500 text-white p-2 rounded-lg" href="{% url 'user:user_update' pk=user.id %}" >Editar perfil</a>
-    <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'user:user_delete' pk=user.id %}" >Eliminar perfil</a>
+        <a class="bg-blue-500 text-white p-2 rounded-lg" href="{% url 'user:user_update' pk=user.id %}">Editar perfil</a>
+        <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'user:user_delete' pk=user.id %}">Eliminar perfil</a>
+    </div>
 </div>
 {% endblock content %}
-
-
-
-
-
-{% comment %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USUARIO | PERFIL </title>
-</head>
-<body>
-    <h1> PERFIL USUARIO </h1>
-</body>
-</html>    
-{% endcomment %}

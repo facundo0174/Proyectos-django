@@ -1,15 +1,16 @@
 {% extends 'layouts/general_layouts.html' %}
+
 {% block title %}
     USER | DELETE
 {% endblock title %}
 
 {% block content %}
-<h1> {{user.username}} ¿Estás seguro de que deseas eliminar tu cuenta?</h1>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Sí, eliminar</button>
-</form>
-<a href="{% url 'user:user_profile' pk=user.id %}">Cancelar</a>
-{% comment %} <a href="javascript:history.back()">Cancelar</a> {% endcomment %}
+<div class="flex flex-col items-center text-center">
+    <h1 class="text-2xl mb-6 text-white">{{ user.username }}, ¿Estás seguro de que deseas eliminar tu cuenta?</h1>
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">Sí, eliminar</button>
+    </form>
+    <a href="{% url 'user:user_profile' pk=user.id %}" class="bg-green-500 text-white py-2 px-4 rounded-lg">Cancelar</a>
+</div>
 {% endblock content %}
-
