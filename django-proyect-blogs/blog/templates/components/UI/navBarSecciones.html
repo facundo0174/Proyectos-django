@@ -1,14 +1,25 @@
-<nav class="bg-gradient-to-br via-gray-800 from-gray-700 to-black"> 
-    <ul class="flex flex-wrap text-wrap justify-center text-2xl font-black">
-        {% for category in categories %}
+<nav class="bg-gradient-to-br via-gray-800 from-gray-700 to-black h-15">
+    <div class="flex justify-between items-center">
+        <!-- Categorías -->
+        <ul class="flex flex-wrap text-wrap text-2xl font-black">
+            {% for category in categories %}
+                <li class="p-5">
+                    {% if category.category_name != 'Recientes' %}
+                        <a href="{% url 'post:post_by_category' slug=category.slug %}" class="text-white transition-colors duration-300 hover:text-blue-500"> {{ category.category_name }} </a>
+                    {% endif %}
+                </li>
+            {% endfor %}
             <li class="p-5">
-                {% if category.category_name != 'Recientes' %}
-                <a href="{% url 'post:post_by_category' slug=category.slug %}" class="text-white transition-colors duration-300 hover:text-blue-500"> {{ category.category_name }} </a>
-                {% endif %}
+                <a href="{% url 'post:category_recent' %}" class="text-white transition-colors duration-300 hover:text-blue-500"> Recientes </a>
             </li>
-        {% endfor %}
-        <li class="p-5">
-            <a href="{% url 'post:category_recent' %}" class="text-white transition-colors duration-300 hover:text-blue-500"> Recientes </a>
-        </li>
-    </ul>
+        </ul>
+
+        <form method="GET" action="{% url 'post:test_view' %}" class="flex space-x-2">
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Buscar posts..." class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400">
+            <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900">Buscar</button>
+        </form>
+
+    </div>
 </nav>
+
+

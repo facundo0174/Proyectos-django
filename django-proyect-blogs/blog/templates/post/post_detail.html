@@ -1,81 +1,225 @@
 {% extends 'layouts/general_layouts.html' %}
-{% block title %}Post detail| BLOG IA{% endblock title %}
-
+{% block title %}Post detail | BLOG IA{% endblock title %}
+{% load static %}
 {% block content %}
-    {% if active_images %}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
 
-            {% for image in active_images %}
-                <img src="{{ image.image.url }}" alt="Portada del post" class="w-[400px] object-cover aspect-[16/9]" />
-            {% endfor %}
-        
+    <!-- Carousel de imágenes del post -->
+    <div class="relative h-[60vh] md:h-[70vh] lg:h-[80vh] w-full object-cover bg-center transition-all duration-500 ease-in-out" id="post-carousel" style="background-image: url('{{ active_images.0.image.url }}');">
+        <!-- Capa oscura -->
+        <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-between p-6">
+            
+            <!-- Botones de navegación (anterior/siguiente) -->
+            <div class="absolute inset-0 flex justify-between items-center p-4">
+                <!-- Botón Anterior -->
+                <button id="prevBtn" class="bg-transparent border-2 border-white p-3 text-white rounded-full hover:bg-gray-800 transition duration-300">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <!-- Botón Siguiente -->
+                <button id="nextBtn" class="bg-transparent border-2 border-white p-3 text-white rounded-full hover:bg-gray-800 transition duration-300">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- Información del post (Fecha, hora, autor) -->
+            <div class="absolute bottom-0 left-0 text-white text-sm p-4">
+                <p>{{ post.creation_date|date:"d M Y, H:i" }}</p>
+                <p>Por: <strong>{{ post.author.username }}</strong></p>
+            </div>
         </div>
-    {% endif %}
-<h3 class="text-2xl uppercase font-bold">{{ post.title }}</h3>
-<p>{{ post.content }}</p>
-<p>Publicado por: <strong class="font-bold">{{ post.author.username }}</strong></p>
-<p>Fecha de publicación: {{ post.creation_date }}</p>
-<p>Comentarios permitidos: {{ post.allowed_comments|yesno:"Si,No" }}</p>
-<div class="flex mt-8 gap-4">
-    {% if user.is_authenticated %}
-        {% if user.id == post.author.id or user.is_collaborator or user.is_superuser %}
-            <a class="bg-blue-500 text-white p-2 rounded-lg" href="{% url 'post:post_update' slug=post.slug %}" >Editar post</a>
-            <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}" >Eliminar post</a>
-        {% endif %}
-    {% endif %}
-</div>
-
-<!-- Listado de comentarios -->
-<h4 class="mt-8 mb-4">Comentarios</h4>
-
-    {% if post.comments.count > 0 %}
-        <ul>
-            {% for comment in post.comments.all %}
-                <li class="mb-8">
-                    {% if comment.id == editing_comment_id %}
-                    <!-- Formulario de actualización -->
-                        <form method="post" action="{% url 'post:comment_update' comment.id %}">
-                            {% csrf_token %}
-                                <p class="flex flex-col">{{ edit_comment_form.content.label_tag }} {{edit_comment_form.content }}</p>
-                                <button type="submit" class="text-blue-500">Actualizar</button>
-                                <a href="{% url 'post:post_detail' post.slug %}" class="text-red500">Cancelar</a>
-                        </form>
-                    {% elif comment.id == deleting_comment_id %}
-                    <!-- Formulario de confirmación de eliminación -->
-                        <form method="post" action="{% url 'post:comment_delete' comment.id %}">
-                        {% csrf_token %}
-                            <p>¿Estás seguro de que deseas eliminar este comentario?</p>
-                            <button type="submit" class="text-blue-500">Confirmar</button>
-                            <a href="{% url 'post:post_detail' post.slug %}" class="text-red500">Cancelar</a>
-                        </form>
-                    {% else %}
-                        <!-- Comentario -->
-                        <p>{{ comment.content }}</p>
-                        <small>Escrito por <strong>{{ comment.author.username }}</strong> el {{comment.creation_date }}</small>
-                        {% if comment.author == user %}
-                            <a href="?edit_comment={{ comment.id }}" class="text-blue500">Editar</a>
-                            <a href="?delete_comment={{ comment.id }}" class="text-red500">Eliminar</a>
-                        {% elif user.is_collaborator and post.author == user and not comment.author.is_admin and not comment.author.is_superuser or user.is_superuser or user.is_admin %}
-                            <a href="?delete_comment={{ comment.id }}" class="text-red500">Eliminar</a>
-                        {% endif %}
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay comentarios aún.</p>
-    {% endif %}
+    </div>    
     
-    {% if user.is_authenticated %}
-        <h4>Agregar un comentario</h4>
-        <form method="post" action="{% url 'post:comment_create' post.slug %}">
-        {% csrf_token %}
-            <p class="flex flex-col mt-4 mb-8">{{ add_comment_form.content.label_tag }} {{add_comment_form.content }}</p>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg">Agregar comentario</button>
+    <!-- Título del post -->
+    <div class="text-center py-8">
+        <h1 class="text-4xl font-bold text-white uppercase">{{ post.title }}</h1>
+    </div>
+
+    <!-- Contenido del post -->
+    <div class="max-w-4xl mx-auto px-6">
+        <p class="text-lg text-white leading-relaxed">{{ post.content }}</p>
+
+        <!-- Visualizaciones -->
+        <div class="flex justify-center items-center mt-6">
+            <p class="text-white text-sm flex items-center">
+                <!-- Ícono de visualizaciones -->
+                <img src="{% static 'assets/data-visu.png' %}" alt="Visualizaciones" class="inline-block w-10 h-10 mr-2"> <!-- Ajusta el tamaño del ícono según lo necesites -->
+                <strong>{{ post.views }}</strong>
+            </p>
+        </div>        
+    </div>
+    <!-- Botones de acciones del post -->
+    <div class="flex mt-8 gap-4 justify-center">
+        {% if user.is_authenticated %}
+            {% if user.is_collaborator or user.is_superuser %}
+                <a class="bg-blue-500 text-white p-2 rounded-lg" href="{% url 'post:post_update' slug=post.slug %}">Editar post</a>
+                <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:post_delete' slug=post.slug %}">Eliminar post</a>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="flex justify-center mt-6 gap-4 ">
+        <a 
+            href="https://wa.me/?text=¡Mira%20este%20post!%20{{ post.title }}%20-%20{{ request.build_absolute_uri }}" 
+            target="_blank" 
+            class="text-white p-2 flex items-center transition-colors duration-300 ease-in-out hover:bg-green-600 rounded-full"
+        >
+            <!-- Ícono -->
+            <img src="{% static 'assets/whatsapp-icon.png' %}" alt="Compartir en WhatsApp" class="w-8 h-8">
+        </a>
+        <!-- Botón de me gusta -->
+        <form method="post" action="{% url 'post:post_detail' post.slug %}" class="flex justify-center items-center mt-4">
+            {% csrf_token %}
+            <button type="submit" class="focus:outline-none">
+                {% if user_like %}
+                    <!-- Corazón lleno -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                {% else %}
+                    <!-- Corazón vacío  -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z" />
+                    </svg>
+                {% endif %}
+            </button>
+            <span class="ml-2 text-blue-500">{{ likes_count }} me gusta</span>
+        </form>      
+    </div>
+    <!-- Ícono de comentarios con la cantidad de comentarios -->
+    <div class="flex justify-center mt-6">
+        <a href="javascript:void(0);" id="toggle-comments" class="flex items-center text-blue-500">
+            <i class="fa fa-comments"></i> 
+            <span class="ml-2">
+                {% if post.comments.count > 0 %}
+                    ({{ post.comments.count }})
+                {% else %}
+                    (0)
+                {% endif %}
+            </span>
+        </a>
+    </div>
+
+        <!-- Sección de comentarios, inicialmente oculta -->
+    <div id="comments-section" style="display: none;" class="mt-8">
+        <!-- Listado de comentarios -->
+        <h4 class="mt-8 mb-4 text-white text-center text-2xl font-semibold">Comentarios</h4>
+        {% if post.comments.count > 0 %}
+            <ul class="mx-auto w-full max-w-3xl">
+                {% for comment in post.comments.all %}
+                    <li class="mb-8 bg-gray-800 p-4 rounded-lg shadow-lg">
+                        {% if comment.id == editing_comment_id %}
+                            <!-- Formulario de actualización de comentario -->
+                            <form method="post" action="{% url 'post:comment_update' comment.id %}" class="flex flex-col items-center">
+                                {% csrf_token %}
+                                <p>{{ edit_comment_form.content.label_tag }} {{ edit_comment_form.content }}</p>
+                                <button type="submit" class="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500 transition">Actualizar</button>
+                                <a href="{% url 'post:post_detail' post.slug %}" class="text-red-500 hover:text-red-400 mt-2">Cancelar</a>
+                            </form>
+                        {% elif comment.id == deleting_comment_id %}
+                            <!-- Confirmación de eliminación del comentario -->
+                            <form method="post" action="{% url 'post:comment_delete' comment.id %}" class="flex flex-col items-center">
+                                {% csrf_token %}
+                                <p class="text-white">¿Estás seguro de que deseas eliminar este comentario?</p>
+                                <button type="submit" class="bg-red-600 text-white p-2 rounded-lg hover:bg-red-500 transition">Confirmar</button>
+                                <a href="{% url 'post:post_detail' post.slug %}" class="text-blue-500 hover:text-blue-400 mt-2">Cancelar</a>
+                            </form>
+                        {% else %}
+                            <!-- Mostrar comentario -->
+                            <div class="flex flex-col text-center mb-4 text-gray-200">
+                                <p class="text-lg">{{ comment.content }}</p>
+                                <small class="text-gray-400">
+                                    Escrito por <strong class="text-white">{{ comment.author.username }}</strong> el {{ comment.creation_date }}
+                                </small>
+                                <div class="flex gap-2 justify-center mt-2">
+                                    {% if comment.author == user %}
+                                        <a href="?edit_comment={{ comment.id }}" class="text-blue-500 hover:text-blue-400">Editar</a>
+                                        <a href="?delete_comment={{ comment.id }}" class="text-red-500 hover:text-red-400">Eliminar</a>
+                                    {% elif user.is_collaborator and post.author == user and not comment.author.is_admin and not comment.author.is_superuser or user.is_superuser or user.is_admin %}
+                                        <a href="?delete_comment={{ comment.id }}" class="text-red-500 hover:text-red-400">Eliminar</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-white text-center">No hay comentarios aún.</p>
+        {% endif %}
+
+        <!-- Formulario para agregar comentario -->
+        {% if user.is_authenticated %}
+        <p class="text-white text-sm text-center">Comentarios permitidos: {{ post.allowed_comments|yesno:"Si,No" }}</p>
+        <h4 class="text-white text-center text-xl font-semibold mt-6">Agregar un comentario</h4>
+
+        <!-- Formulario  -->
+        <form method="post" action="{% url 'post:comment_create' post.slug %}" class="flex flex-col items-center w-full max-w-2xl mx-auto mt-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+            {% csrf_token %}
+            
+            <!-- Campo de comentario -->
+            <div class="w-full mb-4 rounded-lg shadow-lg">
+                <label for="content" class="text-white text-sm font-semibold">Tu comentario</label>
+                {{ add_comment_form.content }}
+            </div>
+            
+            <!-- Botón de envío -->
+            <button type="submit" class="bg-green-500 text-white p-3 w-full rounded-lg hover:bg-green-400 transition-all duration-300 ease-in-out shadow-md">
+                Agregar comentario
+            </button>
         </form>
-    {% else %}
-        <p> <a href="{% url 'user:auth_login'%}?next={{ request.path }}" class="hover:text-blue-500"> Inicia sesión </a> para agregar un comentario. </p>
-    {% endif %}
+        {% else %}
+        <p class="text-center text-white mt-4">
+            <a href="{% url 'user:auth_login' %}?next={{ request.path }}" class="hover:text-blue-500">Inicia sesión</a> para agregar un comentario.
+        </p>
+        {% endif %}
+
+    </div>
+
+    <!-- JavaScript para el Toggle de Comentarios y la Carga Dinámica con AJAX -->
+    <script>
+      document.getElementById('toggle-comments').addEventListener('click', function() {
+        var commentsSection = document.getElementById('comments-section');
+        if (commentsSection.innerHTML.trim() === '') {
+          // Realizar petición AJAX para cargar los comentarios
+          fetch('/ruta-para-cargar-comentarios/{{ post.id }}/')
+            .then(response => response.text())
+            .then(data => {
+              commentsSection.innerHTML = data;
+            });
+        }
+        // Alternar visibilidad
+        commentsSection.style.display = commentsSection.style.display === 'none' || commentsSection.style.display === '' ? 'block' : 'none';
+      });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const images = [
+                {% for image in active_images %}
+                    '{{ image.image.url }}',
+                {% endfor %}
+            ];
+            let currentIndex = 0;
+            const carousel = document.getElementById('post-carousel');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+    
+            // Función para cambiar imagen
+            function updateImage(index) {
+                carousel.style.backgroundImage = `url('${images[index]}')`;
+            }
+    
+            // Evento para botón "Anterior"
+            prevBtn.addEventListener('click', function () {
+                currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
+                updateImage(currentIndex);
+            });
+    
+            // Evento para botón "Siguiente"
+            nextBtn.addEventListener('click', function () {
+                currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
+                updateImage(currentIndex);
+            });
+        });
+    </script>
 
 {% endblock content %}
 

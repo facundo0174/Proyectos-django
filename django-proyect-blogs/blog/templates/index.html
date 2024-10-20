@@ -1,13 +1,122 @@
 {% extends 'layouts/general_layouts.html' %}
-
-
+{% load static %}
 {% block title %}
-    INICIO | TEGNOLOGIA BLOG
+    INICIO | TECNOLOGÍA BLOG
 {% endblock title %}
 
-
 {% block content %}
-    <h1> NOTICIAS TEGNOLOGICAS  </h1>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Post Destacado -->
+        {% if featured_post %}
+            <div class="featured-post col-span-2 h-auto p-4 rounded-lg shadow-md">
+                <h2 class="text-3xl font-semibold text-white">{{ featured_post.title }}</h2>
+                {% if featured_post.images.exists %}
+                    {% with featured_post.images.first as image %}
+                        <a href="{% url 'post:post_detail' slug=featured_post.slug %}">
+                            <div class="w-full h-96 bg-cover bg-center relative rounded-xl" style="background-image: url('{{ image.image.url }}');">
+                                <!-- Fecha, Hora y Autor superpuestos -->
+                                <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-br-xl">
+                                    <p>{{ featured_post.created_at|date:"d M Y" }} . {{ featured_post.author.username }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    {% endwith %}
+                {% else %}
+                    <a href="{% url 'post:post_detail' slug=featured_post.slug %}">
+                        <div class="w-full h-96 bg-cover bg-center relative rounded-xl"
+                            style="background-image: url('{% static 'assets/default-image.jpg' %}');">
+                            <!-- Fecha, Hora y Autor superpuestos -->
+                            <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-br-xl">
+                                <p>{{ featured_post.created_at|date:"d M Y" }} . {{ featured_post.author.username }}</p>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
+                <p class="text-white mb-4">{{ featured_post.content|truncatewords:50 }}</p>
+                <a href="{% url 'post:post_detail' slug=featured_post.slug %}" class="text-blue-500 hover:underline">Leer más</a>
+            </div>
+        {% else %}
+            <p class="text-white">No hay posts destacados.</p>
+        {% endif %}
+
+
+        <!-- Posts Populares -->
+        <div class="popular-posts">
+            <h3 class="text-xl font-semibold mb-4 text-white">Posts Populares</h3>
+            <div class="grid gap-6">
+                {% for post in popular_posts %}
+                    <div class="post rounded-lg shadow-md">
+                        {% if post.images.exists %}
+                            {% with post.images.first as image %}
+                                <a href="{% url 'post:post_detail' slug=post.slug %}">
+                                    <div class="w-full h-44 bg-cover bg-center relative rounded-xl"
+                                         style="background-image: url('{{ image.image.url }}');">
+                                         <!-- Fecha, Hora y Autor superpuestos -->
+                                         <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-br-xl">
+                                            <p>{{ post.creation_date|date:"d M Y" }} . {{ post.author.username }}</p>
+                                         </div>
+                                    </div>
+                                </a>
+                            {% endwith %}
+                        {% else %}
+                            <a href="{% url 'post:post_detail' slug=post.slug %}">
+                                <div class="w-full h-44 bg-cover bg-center relative rounded-xl"
+                                     style="background-image: url('{% static 'assets/default-image.jpg' %}');">
+                                     <!-- Fecha, Hora y Autor superpuestos -->
+                                     <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-br-xl">
+                                        <p>{{ post.creation_date|date:"d M Y" }} . {{ post.author.username }}</p>
+                                     </div>
+                                </div>
+                            </a>
+                        {% endif %}
+                        <h4 class="text-lg font-semibold text-white mt-2">{{ post.title }}</h4>
+                        <p class="text-white mb-2">{{ post.content|truncatewords:20 }}</p>
+                        <a href="{% url 'post:post_detail' slug=post.slug %}" class="text-blue-500 hover:underline">Leer más</a>
+                    </div>
+                {% empty %}
+                    <p class="text-white">No hay posts populares.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts Recientes -->
+    <h3 class="text-xl font-semibold mb-4 text-white">Posts Recientes</h3>
+    <div class="recent-posts grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for post in recent_posts %}
+            <div class="post rounded-lg shadow-md">
+                {% if post.images.exists %}
+                    {% with post.images.first as image %}
+                        <a href="{% url 'post:post_detail' slug=post.slug %}">
+                            <div class="w-full h-72 bg-cover bg-center relative rounded-xl"
+                                 style="background-image: url('{{ image.image.url }}');">
+                                 <!-- Fecha, Hora y Autor superpuestos -->
+                                 <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-br-xl">
+                                    <p>{{ post.creation_date|date:"d M Y" }} . {{ post.author.username }}</p>
+                                 </div>
+                            </div>
+                        </a>
+                    {% endwith %}
+                {% else %}
+                    <a href="{% url 'post:post_detail' slug=post.slug %}">
+                        <div class="w-full h-72 bg-cover bg-center relative rounded-xl"
+                             style="background-image: url('{% static 'assets/default-image.jpg' %}');">
+                             <!-- Fecha, Hora y Autor superpuestos -->
+                             <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-br-xl">
+                                <p>{{ post.published_at|date:"d M Y H:i" }}</p>
+                                <p>{{ post.author }}</p>
+                             </div>
+                        </div>
+                    </a>
+                {% endif %}
+                <h4 class="text-lg font-semibold text-white">{{ post.title }}</h4>
+                <p class="text-white mb-2">{{ post.content|truncatewords:20 }}</p>
+                <a href="{% url 'post:post_detail' slug=post.slug %}" class="text-blue-500 hover:underline">Leer más</a>
+            </div>
+        {% empty %}
+            <p class="text-white">No hay posts recientes.</p>
+        {% endfor %}
+    </div>
 {% endblock content %}
 
     

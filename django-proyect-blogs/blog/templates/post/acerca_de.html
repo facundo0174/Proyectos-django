@@ -1,28 +1,101 @@
 {% extends 'layouts/general_layouts.html' %}
 
-
 {% block title %}
-    INFORMACION DE PAGINA
+    INFORMACIÓN DE PÁGINA
 {% endblock title %}
-
+{% load static %}
 
 {% block content %}
-    <h1> Informacion de Pagina </h1>
-    <p> esta pagina es un proyecto educativo para profundizar en los lenguajes python, html, css y django </p>
-    <p>el objetivo del la pagina en si seria simular de manera mas profesional/realista/practica un sitio web dedicado
-    a la carga de noticias referentes a la tegnologia</p>
-    <p> integrantes del proyecto:</p>
-    <li>
-        <p>-Angel Emmanuel, Lopez Vega.</p>
-    </li>
-    <li>
-        <p>-Augusto Nahuel, Valentinotti.</p>
-    </li>
-    <li>
-        <p>-Franco Quiroz, Facundo Agustin.</p>
-    </li>
-    <li>
-        <p>-Olmos, Silvina Alejandra.</p>
-    </li>
+<div class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto py-12 px-4">
+        <h1 class="text-5xl font-extrabold mb-8 text-center text-indigo-400">Nosotros</h1>
+        
+        <!-- Sección principal con texto e imagen -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-12 mb-12">
+            <p class="text-lg md:text-xl leading-relaxed md:w-2/3">
+                Bienvenidos al blog de noticias y novedades tecnológicas, un proyecto desarrollado como parte del curso <strong>Informatorio 2024</strong>. 
+                Esta página tiene como objetivo simular un sitio web profesional dedicado a la publicación de noticias sobre tecnología, 
+                mientras profundizamos en el uso de lenguajes y herramientas como <strong>Python</strong>, <strong>HTML</strong>, <strong>CSS</strong> y el framework <strong>Django</strong>.
+            </p>
+            <!-- Imagen 1: Ocupará el lado derecho en pantallas grandes -->
+            <img src="{% static 'nosotros/4.jpeg' %}" 
+                 alt="Equipo de trabajo" class="rounded-xl shadow-lg object-cover h-80 w-full md:w-1/3">
+        </div>
 
+        <!-- Sección Nuestra Misión -->
+        <h2 class="text-4xl font-bold text-center text-indigo-300 mb-8">Nuestra Misión</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+            <!-- Imagen 2: Ocupará el lado izquierdo en pantallas grandes -->
+            <img src="{% static 'nosotros/imagen2.jpeg' %}" 
+                 alt="Noticias y tecnología" class="rounded-xl shadow-lg object-cover h-80 w-full md:order-last">
+            <p class="text-lg leading-relaxed">
+                El propósito de este proyecto es crear un espacio informativo donde podamos compartir lo último en tecnología, avances, gadgets y noticias relevantes. 
+                Además, buscamos mejorar nuestras habilidades como desarrolladores y aplicar de manera práctica lo aprendido en el curso.
+            </p>
+        </div>
+
+        <!-- Sección Nuestro Equipo -->
+        <h2 class="text-4xl font-bold text-center text-indigo-300 mb-8">Nuestro Equipo</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+            <!-- Lista de integrantes -->
+            <div class="text-lg leading-relaxed">
+                <ul class="list-disc pl-6 space-y-4">
+                    <li><strong>Ángel Emmanuel López Vega:</strong> Especialista en el diseño frontend y la experiencia de usuario.</li>
+                    <li><strong>Augusto Nahuel Valentinotti:</strong> Responsable de la gestión de contenido y análisis de noticias tecnológicas.</li>
+                    <li><strong>Franco Quiroz Facundo Agustín:</strong> Enfocado en el desarrollo backend y la integración con Django.</li>
+                    <li><strong>Silvina Alejandra Olmos:</strong> Encargada de la investigación y redacción de artículos, además de soporte técnico.</li>
+                </ul>
+            </div>
+            <!-- Imagen 3 -->
+            <img src="{% static 'nosotros/imagen3.jpeg' %}" 
+                 alt="Desarrollo web" class="rounded-xl shadow-lg object-cover h-80 w-full">
+        </div>
+
+        <!-- Sección ¿Por qué lo hacemos? -->
+        <h2 class="text-4xl font-bold text-center text-indigo-300 mb-8">¿Por qué lo hacemos?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+            <!-- Imagen 4: Ocupará el lado izquierdo en pantallas grandes -->
+            <img src="{% static 'nosotros/imagen1.png' %}" 
+                 alt="Aprendiendo programación" class="rounded-xl shadow-lg object-cover h-80 w-full md:order-last">
+            <p class="text-lg leading-relaxed">
+                Somos un equipo apasionado por la tecnología y por aprender nuevas habilidades. Este blog no solo es un ejercicio académico, sino también una manera de contribuir 
+                con la comunidad tecnológica, brindando información relevante y de calidad.
+            </p>
+        </div>
+
+        <!-- Imagen final grande -->
+        <div class="mt-12">
+            <img src="{% static 'nosotros/imagen5.jpg' %}" 
+                 alt="Tecnología moderna" class="rounded-xl shadow-lg object-cover h-98 w-full">
+        </div>
+    </div>
+    <div class="flex items-center justify-center min-h-screen bg-gray-900">
+        <div class="bg-gray-900 p-8 rounded-lg shadow-lg w-96">
+            <h2 class="text-white text-2xl font-semibold text-center mb-6">Contáctanos</h2>
+            <form method="post" enctype="multipart/form-data" class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                {% csrf_token %}
+                <div class="flex flex-col gap-6">
+                    <!-- Nombre -->
+                    <div class="flex flex-col">
+                        <label for="name" class="text-white text-sm font-semibold">Nombre</label>
+                        <input type="text" id="name" name="name" placeholder="Tu nombre" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" required>
+                    </div>
+                    <!-- Correo Electrónico -->
+                    <div class="flex flex-col">
+                        <label for="email" class="text-white text-sm font-semibold">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" placeholder="Tu correo" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" required>
+                    </div>
+                    <!-- Mensaje -->
+                    <div class="flex flex-col">
+                        <label for="message" class="text-white text-sm font-semibold">Mensaje</label>
+                        <textarea id="message" name="message" placeholder="Tu mensaje" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 h-32" required></textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 transition duration-300 mt-6">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>
 {% endblock content %}
+

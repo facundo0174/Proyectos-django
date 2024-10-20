@@ -1,36 +1,72 @@
 {% extends 'layouts/general_layouts.html' %}
 
-{% block title %} ACTUALIZAR Post | BLOG TEGNOLOGIA{% endblock title %}
+{% block title %} ACTUALIZAR Post | BLOG TECNOLÓGICO{% endblock title %}
 {% block content %}
-    <h2>Actualizar: {{ form.instance.title }}</h2>
-    <form method="post" enctype="multipart/form-data" class="flex flex-col justify-center items-start w-[400px] gap-4">
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto mt-10">
+    <h2 class="text-white text-2xl font-semibold text-center mb-6">Actualizar: {{ form.instance.title }}</h2>
+    
+    <form method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
         {% csrf_token %}
-        <div class="flex flex-col">{{ form.category.label_tag }} {{ form.category }}</div>
-        <div class="flex flex-col">{{ form.title.label_tag }} {{ form.title }}</div>
+        
+        <!-- Campo para seleccionar la categoría -->
         <div class="flex flex-col">
-            {{ form.content.label_tag }} {{ form.content }}
+            <label class="text-white font-semibold">{{ form.category.label_tag }}</label>
+            <div class="bg-gray-700 p-3 rounded-lg border border-gray-600">
+                <select class="w-full text-black bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
+                    {% for choice in form.category.field.choices %}
+                        <option value="{{ choice.0 }}" {% if choice.0 == form.category.value %}selected{% endif %}>{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-    
-        <div class="flex gap-4">
-            {{ form.allow_comments.label_tag }} {{ form.allow_comments }}
+
+        <!-- Campo para el título del post -->
+        <div class="flex flex-col">
+            <label class="text-white font-semibold">{{ form.title.label_tag }}</label>
+            <div class="bg-gray-700 p-3 rounded-lg border border-gray-600">
+                <input type="text" name="title" value="{{ form.title.value }}" class="w-full text-black bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" />
+            </div>
         </div>
-    
-        <h3>Imágenes cargadas</h3>
+
+        <!-- Campo para el contenido del post -->
+        <div class="flex flex-col">
+            <label class="text-gray-200 font-semibold">{{ form.content.label_tag }}</label>
+            <div class="bg-gray-700 p-3 rounded-lg border border-gray-600">
+                <textarea name="content" class="w-full text-black bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">{{ form.content.value }}</textarea>
+            </div>
+        </div>
+
+        <!-- Opción para permitir comentarios -->
+        <div class="flex gap-4 items-center text-white">
+            <label>{{ form.allow_comments.label_tag }}</label>
+            {{ form.allow_comments }}
+        </div>
+
+        <h3 class="text-white font-semibold mt-4">Imágenes cargadas</h3>
         <div class="flex flex-col gap-4">
             {% for active_img in form.active_images %} 
-                <p>
-                    <a href="{{ active_img.image.url }}" target="_blank"> <img class="inline-flex w-[200px] aspect-[16/9] object-cover" src="{{ active_img.image.url }}" alt="Portada {{ active_img.id }} del post" /> </a>
+                <p class="text-white">
+                    <a href="{{ active_img.image.url }}" target="_blank">
+                        <img class="inline-flex w-[200px] aspect-[16/9] object-cover" src="{{ active_img.image.url }}" alt="Portada {{ active_img.id }} del post" />
+                    </a>
                     <input type="checkbox" name="keep_image_{{ active_img.id }}" id="keep_image_{{ active_img.id }}" checked />
-                    <label for="keep_image_{{ active_img.id }}">Activa</label>
+                    <label for="keep_image_{{ active_img.id }}" class="text-white">Activa</label>
                 </p>
             {% endfor %}
         </div>
-        <h3>Cargar nuevas imágenes</h3>
-        <input type="file" name="images" multiple />
-        <div class="flex gap-2">
-            <a href="{% url 'post:post_detail' slug=form.instance.slug %}" class="bg-red-500 text-white p-2 rounded-md">Cancelar</a>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded-md"> Guardar cambios </button>
+
+        <h3 class="text-white font-semibold mt-4">Cargar nuevas imágenes</h3>
+        <input type="file" name="images" multiple class="bg-gray-700 text-white p-2 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" />
+
+        <div class="flex gap-2 mt-4">
+            <a href="{% url 'post:post_detail' slug=form.instance.slug %}" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300">
+                Cancelar
+            </a>
+            <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition duration-300">
+                Guardar cambios
+            </button>
         </div>
     </form>
+</div>
 {% comment %} <a href="javascript:history.back()">Cancelar</a> {% endcomment %}
 {% endblock content %}

@@ -1,6 +1,5 @@
 from django.urls import path
 import apps.post.views as vistaPost
-
 #si tienes una view como clase debes hace as view() siempre
 app_name = 'post'
 '''
@@ -24,6 +23,6 @@ urlpatterns = [
     path('post/<slug:slug>/comment/create/',vistaPost.CommentCreateView.as_view(),name='comment_create'),
     path('comments/<uuid:pk>/update/', vistaPost.CommentUpdateView.as_view(),name='comment_update'),
     path('comments/<uuid:pk>/delete/', vistaPost.CommentDeleteView.as_view(),name='comment_delete'),
-
+    path('test/', vistaPost.TestView.as_view(), name='test_view'),
 ]
 

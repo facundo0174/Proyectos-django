@@ -66,7 +66,7 @@ class UserDeleteView(LoginRequiredMixin,DeleteView):
 class RegisterView(CreateView):
     template_name = 'auth/auth_register.html'
     form_class = RegisterForm
-    success_url = reverse_lazy('index') # Redirige al home una vez registrado
+    success_url = reverse_lazy('index')  # Redirige al home una vez registrado
     
     def form_valid(self, form):
         # Llama a la función form_valid de la clase padre y guarda el usuario
@@ -74,10 +74,8 @@ class RegisterView(CreateView):
         # Asignar el grupo Registered al usuario recién creado
         registered_group = Group.objects.get(name='registred')
         self.object.groups.add(registered_group)
-        # En caso de ser necesario se le puede asignar explicitamente los permisos del grupo al usuario
-        # for permission in registered_group.permissions.all():
-        # self.object.user_permissions.add(permission)
         return response
+
 
 class LoginView(LoginViewDjango):
     template_name = 'auth/auth_login.html'

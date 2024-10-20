@@ -12,8 +12,10 @@
 
     <div id="nav-menu" class="hidden md:block">
         {% include 'components/UI/navbarBASIC.html' %}
-        <div class="text-red-400">Segundo nav (el texto está para saber dónde empieza, podría ir img o no estar)</div>
         {% include 'components/UI/navBarSecciones.html' %}
+        <div class="w-full h-96">
+            <img src="{% static 'currusel/tu-imagen-fija.jpg' %}" alt="Imagen Fija" class="w-full h-full object-cover">
+        </div>
     </div>
 </header>
 

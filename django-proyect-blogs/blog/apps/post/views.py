@@ -3,8 +3,12 @@ from apps.post.models import Post, PostImage, Category, Comment
 from apps.post.forms import NewPostForm, UpdatePostForm, CategoryForm, CommentForm
 from django.urls import reverse,reverse_lazy
 from django.conf import settings
-from django.shortcuts import get_object_or_404
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin,PermissionRequiredMixin
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import Post, Like, View
 
 class PostUpdateView(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
     model = Post
@@ -75,18 +79,55 @@ class PostListView(ListView):
     model = Post
     template_name = 'post/category_recent.html'
     context_object_name = 'posts'
-    paginate_by = 5  # Número de posts por página
+    paginate_by = 10  # Número de posts por página
 
     def get_queryset(self):
-        # Ordena los posts por fecha reciente y los retorna
-        return Post.objects.order_by('-creation_date')
-    
+        order = self.request.GET.get('order', 'date')  # Obtener el parámetro de orden
+        if order == 'alphabetical':
+            return Post.objects.order_by('title')  # Ordenar alfabéticamente por título
+        elif order == 'oldest':
+            return Post.objects.order_by('creation_date')  # Ordenar por fecha (más viejo primero)
+        return Post.objects.order_by('-creation_date')  # Ordenar por fecha (más reciente primero)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # OJO solo a esta view los trae como contexto, si usaramos otra view este contexto de post ordenados por fecha desapareceria.
+        context['order'] = self.request.GET.get('order', 'date')  # Añadir el orden al contexto
         return context
 
-class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
+class TestView(ListView):
+    model = Post
+    template_name = 'post/test.html'  
+    context_object_name = 'posts'
+    paginate_by = 5  # Paginación de 5 elementos por página.
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(author__username__icontains=query)
+            ).order_by('-creation_date')
+        return Post.objects.all().order_by('-creation_date')  # Mostrar todos los posts si no hay búsqueda.
+
+    def paginate_queryset(self, queryset, page_size):
+        """ Sobrescribir paginación para manejar páginas vacías o inválidas. """
+        paginator = Paginator(queryset, page_size)
+        page = self.request.GET.get('page')
+
+        try:
+            page_obj = paginator.page(page)
+        except PageNotAnInteger:
+            # Si el número de página no es un entero, mostrar la primera página.
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # Si la página está vacía, mostrar la última página válida.
+            page_obj = paginator.page(paginator.num_pages)
+
+        return (paginator, page_obj, page_obj.object_list, page_obj.has_other_pages())
+
+
+class PostCreateView(CreateView):
     model = Post
     form_class = NewPostForm
     template_name = 'post/post_create.html'
@@ -111,22 +152,37 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     def get_success_url(self):
         return reverse('post:post_detail', kwargs={'slug': self.object.slug})
     
-class PostDetailView(DetailView):
+class PostDetailView(DetailView): 
     model = Post
     template_name = 'post/post_detail.html'
     context_object_name = 'post'
 
-    def get_context_data(self, **kwargs): #obtengo datos del contexto basado en model=post, que serian los objetos de la tabla en BD
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        # Incrementar contador de visualizaciones solo si el usuario no ha visto el post antes
+        if self.request.user.is_authenticated:
+            view_exists = View.objects.filter(user=self.request.user, post=self.object).exists()
+            if not view_exists:
+                View.objects.create(user=self.request.user, post=self.object)
+                self.object.views += 1
+                self.object.save()
+
         # Obtener todas las imágenes activas del post
         active_images = self.object.images.filter(active=True) 
-        #filtro las img del post, el contexto es de un unico post, ya que poseen slugs unicos, por lo tanto postDetail hace referencia
-        #a la vista de 1 solo objeto post, al hacer contexto tomamos ese objeto unico post de la BD y buscamos las img para mostrar.
-        # las cuales son asociadas por otra tabla por ello referenciamos como contexto IMAGES, ya que puede tener muchas.
         context['active_images'] = active_images
         context['add_comment_form'] =  CommentForm()
         context ['user'] = self.request.user #obtengo usuario autenticado para comprobacion a nivel template
-        
+        context['add_comment_form'] = CommentForm()
+   
+        # Obtener el estado del "me gusta" para el usuario actual
+        if self.request.user.is_authenticated:
+            user_like = Like.objects.filter(user=self.request.user, post=self.object).exists()
+            context['user_like'] = user_like
+
+        # Obtener la cantidad total de "me gusta"
+        context['likes_count'] = self.object.likes  # Asumiendo que `likes` es un campo IntegerField en tu modelo Post
+
         # Editar comentario
         edit_comment_id = self.request.GET.get('edit_comment')
         if edit_comment_id:
@@ -138,6 +194,7 @@ class PostDetailView(DetailView):
             else:
                 context['editing_comment_id'] = None
                 context['edit_comment_form'] = None
+        #empieza la linea no borrada del merge que se asegura de el autor es el que trata de borrar y lo que se quiera borrar no sea un SU o collaborator
         # Eliminar comentario
         delete_comment_id = self.request.GET.get('delete_comment')
         if delete_comment_id:
@@ -148,8 +205,30 @@ class PostDetailView(DetailView):
                 context['deleting_comment_id'] = comment.id
             else:
                 context['deleting_comment_id'] = None
+         #termina la linea no borrada
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        post = self.get_object()
+
+        # Manejar el "me gusta"
+        if request.user.is_authenticated:
+            like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+            if created:
+                # Si el "me gusta" no existía, se creó uno nuevo
+                post.likes += 1
+            else:
+                # Si ya existía, lo eliminamos (el usuario "retira" su "me gusta")
+                like.delete()
+                post.likes -= 1
+
+            post.save()
+
+        return redirect('post:post_detail', slug=post.slug)
+
+
 
 class CategoryListView(ListView):
     model = Category
@@ -158,13 +237,15 @@ class CategoryListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        # Ordena las categorías alfabéticamente por el campo category_name pero la bd sigue desordenanda solo la vista es ordenada
+        # Devuelve las categorías ordenadas alfabéticamente
         return Category.objects.order_by('category_name')
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()  # Asegúrate de que estás pasando las categorías
-        context ['user'] = self.request.user #obtengo usuario autenticado para comprobacion a nivel template
+        context = super().get_context_data(**kwargs)  
+        #context ['user'] = self.request.user #obtengo usuario autenticado para comprobacion a nivel template
+        #estaba en desarrollo no se sabe porque no se lo incorpora ['user']
+        # No es necesario volver a obtener las categorías aquí razon lo hace el queryset
+
         return context
 
 class CategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):

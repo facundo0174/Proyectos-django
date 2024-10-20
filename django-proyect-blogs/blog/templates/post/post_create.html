@@ -1,16 +1,47 @@
 {% extends 'layouts/general_layouts.html' %}
 {% block title %} Post | BLOG IA{% endblock title %}
 {% block content %}
-    <h2>Crear nuevo post</h2>
-    <form method="post" enctype="multipart/form-data">
+    <h2 class="text-white text-2xl font-semibold text-center mb-6">Crear nuevo post</h2>
+    <form method="post" enctype="multipart/form-data" class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
         {% csrf_token %}
-        <div class="flex flex-col gap-4">
-            <p class="flex flex-col">{{ form.category.label_tag }} {{ form.category }}</p>
-            <p class="flex flex-col">{{ form.title.label_tag }} {{ form.title }}</p>
-            <p class="flex flex-col"> <label for="id_content">Contenido:</label> {{ form.content }} </p>
-            <p> permitir comentarios:{{ form.allowed_comments }}</p>
-            <p><input type="file" name="images" multiple /></p>
+        <div class="flex flex-col gap-6">
+            <!-- Categoría -->
+            <div class="flex flex-col">
+                <label class="text-white text-sm font-semibold" for="id_category">{{ form.category.label }}</label>
+                <select id="id_category" name="category" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
+                    {% for option in form.category.field.choices %}
+                        <option value="{{ option.0 }}" {% if option.0 == form.category.value %}selected{% endif %}>{{ option.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <!-- Título -->
+            <div class="flex flex-col">
+                <label class="text-white text-sm font-semibold" for="id_title">{{ form.title.label }}</label>
+                <input type="text" id="id_title" name="title" value="{{ form.title.value }}" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" placeholder="Escribe el título aquí..." />
+            </div>
+            <!-- Contenido -->
+            <div class="flex flex-col">
+                <label class="text-white text-sm font-semibold" for="id_content">Contenido:</label>
+                <textarea id="id_content" name="content" rows="4" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" placeholder="Escribe tu contenido aquí...">{{ form.content.value }}</textarea>
+            </div>
+            <!-- Permitir comentarios -->
+            <div class="flex flex-col">
+                <label class="text-white text-sm font-semibold" for="id_allowed_comments">Permitir comentarios:</label>
+                {{ form.allowed_comments }}
+            </div>
+            <!-- Post Destacado -->
+            <div class="flex flex-col">
+                <label class="text-white text-sm font-semibold" for="id_is_featured">Marcar como post destacado:</label>
+                {{ form.is_featured }}
+            </div>
+            <!-- Imágenes -->
+            <div class="flex flex-col">
+                <label class="text-white text-sm font-semibold" for="id_images">Imágenes:</label>
+                <input type="file" name="images" multiple class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" />
+            </div>
         </div>
-    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg"> Crear Post </button>
+        <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 transition duration-300 mt-6">Crear Post</button>
     </form>
 {% endblock content %}
+
+

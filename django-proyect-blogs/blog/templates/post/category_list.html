@@ -1,48 +1,54 @@
 {% extends 'layouts/general_layouts.html' %}
-{% block title %} Editar Categorias | BLOG TEGNOLOGICO{% endblock title %}
+{% block title %} Editar Categorías | BLOG TEGNOLOGICO{% endblock title %}
 {% block content %}
+{% load static %}  
 
-<div class="grid grid-cols-1 gap-6">
-    {% for category in categories %}
-        <div class="bg-gray-800 text-white rounded-2xl p-6">
-            <h3 class="text-2xl uppercase font-bold">{{ category.category_name }}</h3>
-            <p>Fecha de creacion: {{ category.creation_date }}</p>
-            <div class="flex gap-2 mt-8">
-            {% if user.is_authenticated %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">  
+    {% for category in categories %}  <!-- Itera sobre cada categoría en la lista de categorías -->
+        <div class="relative bg-cover bg-center rounded-2xl shadow-lg h-64" style="background-image: url('{% static 'assets/imag_cate.jpg' %}');">
+            <div class="absolute bottom-0 w-full bg-gray-800 bg-opacity-75 text-white rounded-b-2xl p-4"> <!-- Asegúrate de que este fondo se posicione en la parte inferior -->
+                <div>
+                    <h3 class="text-lg uppercase font-bold">{{ category.category_name }}</h3>
+                    <p class="text-xs">Fecha de creación: {{ category.creation_date }}</p>
+                </div>
+              {% if user.is_authenticated %}
                 {% if user.is_collaborator or user.is_superuser %}
-                    <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:category_update' slug=category.slug %}" >Editar categoria</a>
-                    <a class="bg-red-500 text-white p-2 rounded-lg" href="{% url 'post:category_delete' slug=category.slug %}" >Eliminar categoria</a>
+                  <div class="flex gap-2 mt-4">
+                      <a class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-400 transition duration-300 text-xs" href="{% url 'post:category_update' slug=category.slug %}">Editar categoría</a>
+                      <a class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-400 transition duration-300 text-xs" href="{% url 'post:category_delete' slug=category.slug %}">Eliminar categoría</a>
+                  </div>
                 {% endif %}
-            {%endif%}
+              {%endif%}
             </div>
+        </div>     
+    {% empty %}  
+        <h1 class="px-3 pt-3 pb-3 font-medium text-3xl text-center">No hay categorías.</h1> 
+    {% endfor %}  
+</div> 
+
+
+<div class="bg-transparent p-6 flex justify-center items-center">
+    {% if page_obj.has_previous %}
+        <div class="flex space-x-4">
+            <a href="?page=1&order={{ order }}" class="bg-gray-300 text-gray-800 rounded-lg px-4 py-2 hover:bg-gray-400 hover:text-white transition duration-300">Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}&order={{ order }}" class="bg-gray-300 text-gray-800 rounded-lg px-4 py-2 hover:bg-gray-400 hover:text-white transition duration-300">Anterior</a>
         </div>
-        {% empty %}
-            <h1 class = "px-3 pt-3 pb-3 font-medium text-3xl ">No hay categorías.</h1>
-    {% endfor %}
-    
+    {% endif %}
+
+    {% if page_obj.has_next %}
+        <div class="flex space-x-4">
+            <a href="?page={{ page_obj.next_page_number }}&order={{ order }}" class="bg-gray-300 text-gray-800 rounded-lg px-4 py-2 hover:bg-gray-400 hover:text-white transition duration-300">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&order={{ order }}" class="bg-gray-300 text-gray-800 rounded-lg px-4 py-2 hover:bg-gray-400 hover:text-white transition duration-300">Última</a>
+        </div>
+    {% endif %}
 </div>
 
-<div class="bg-green-400 text-gray-800 rounded-2xl p-6 flex justify-center items-center">
-        {% if page_obj.has_previous %}
-            <div class="flex space-x-4">
-                <a href="?page=1" class="text-black-600 hover:underline" >First</a>
-                <a href="?page={{ page_obj.previous_page_number }}" class="text-blue-600 hover:underline px-2" >Previous</a>
-            </div>
-        {% endif %}
-
-        {% if page_obj.has_next %}
-            <div class="flex space-x-4">
-                <a href="?page={{ page_obj.next_page_number }}" class="text-blue-600 hover:underline px-2">Next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}" class="text-black-600 hover:underline">Last</a>
-            </div>
-        {% endif %}
-</div>
-
-<div class="bg-yellow-400 text-orange-800 p-2 flex justify-center items-center pt-5">
-        <span class="pt-5">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+<div class="bg-gray-300 text-gray-800 p-4 rounded-lg flex justify-center items-center">
+    <span class="text-lg font-semibold">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
 </div>
 
 {% endblock content %}
+
 
 
 
