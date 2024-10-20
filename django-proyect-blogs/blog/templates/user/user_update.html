@@ -7,20 +7,60 @@
 {% block content %}
 <div class="flex flex-col justify-center items-center">
     <h1 class="text-center text-2xl mb-6 text-white">Actualizar Perfil</h1>
-    <form class="flex flex-col max-w-[400px] gap-4" method="post" enctype="multipart/form-data">
+    <form class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto flex flex-col gap-6" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.non_field_errors }}  <!-- Muestra errores generales, si los hay -->
-        {{ form.username.errors }}    <!-- Muestra errores específicos del campo -->
-        <label for="username" class="text-white">Nombre de Usuario: </label>{{ form.username }}  <!-- Campo de nombre de usuario -->
-        {{ form.alias.errors }}  <!-- Muestra errores específicos del campo -->
-        <label for="alias" class="text-white">Alias: </label> {{ form.alias }}  <!-- Campo de alias -->
-        <label for='email' class="text-white">Email:</label> {{ form.email }}
-        <label class = "text-white">Avatar actual:</label>
-        <img src="{{ user.avatar.url }}" alt="Avatar Actual" class="w-[400px] object-cover aspect-[16/9]">
-        <input type="file" name="avatar" id="avatar" class="form-control text-white">
-        {{ form.avatar.errors }}
-        <button type="submit" class="w-full bg-green-400 py-2 rounded-lg text-black">Actualizar</button>
-        <a href="{% url 'user:user_profile' pk=user.id %}" class="w-full bg-green-400 py-2 rounded-lg text-black text-center">Cancelar</a>
+        
+        {{ form.non_field_errors }} <!-- Muestra errores generales del formulario -->
+
+        <!-- Avatar Actual -->
+        <div class="flex flex-col items-center">
+            <label class="text-white text-sm font-semibold">Avatar actual:</label>
+            <img src="{{ user.avatar.url }}" alt="Avatar Actual" class="w-32 h-32 rounded-full object-cover border-2 border-gray-600">
+        </div>
+
+        <!-- Cargar nuevo Avatar -->
+        <div class="flex flex-col">
+            <label for="avatar" class="text-white text-sm font-semibold">Actualizar Avatar:</label>
+            <input type="file" name="avatar" id="avatar" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
+            <!-- Muestra los errores específicos del campo avatar -->
+            {% if form.avatar.errors %}
+                <div class="text-red-500 text-sm mt-1">{{ form.avatar.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Nombre de Usuario -->
+        <div class="flex flex-col">
+            <label for="username" class="text-white text-sm font-semibold">Nombre de Usuario:</label>
+            <!-- Muestra los errores específicos del campo username -->
+            {% if form.username.errors %}
+                <div class="text-red-500 text-sm mt-1">{{ form.username.errors }}</div>
+            {% endif %}
+            {{ form.username }}
+        </div>
+
+        <!-- Alias -->
+        <div class="flex flex-col">
+            <label for="alias" class="text-white text-sm font-semibold">Alias:</label>
+            <!-- Muestra los errores específicos del campo alias -->
+            {% if form.alias.errors %}
+                <div class="text-red-500 text-sm mt-1">{{ form.alias.errors }}</div>
+            {% endif %}
+            {{ form.alias }}
+        </div>
+
+        <!-- Email -->
+        <div class="flex flex-col">
+            <label for="email" class="text-white text-sm font-semibold">Email:</label>
+            <!-- Muestra los errores específicos del campo email si los hay -->
+            {% if form.email.errors %}
+                <div class="text-red-500 text-sm mt-1">{{ form.email.errors }}</div>
+            {% endif %}
+            {{ form.email }}
+        </div>
+
+        <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 cursor-pointer transition duration-300">Actualizar</button>
+
+        <a href="{% url 'user:user_profile' pk=user.id %}" class="bg-gray-600 text-white p-3 rounded-lg w-full text-center hover:bg-gray-500 cursor-pointer transition duration-300">Cancelar</a>
     </form>
 </div>
 {% endblock content %}
