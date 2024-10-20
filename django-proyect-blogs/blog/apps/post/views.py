@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin,PermissionRequiredMixin
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Post, Like, View
+from .models import Post, Like, PostView
 from django.views import View
 from django.core.mail import send_mail
 class PostUpdateView(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
@@ -164,14 +164,15 @@ class PostDetailView(DetailView):
     template_name = 'post/post_detail.html'
     context_object_name = 'post'
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
         # Incrementar contador de visualizaciones solo si el usuario no ha visto el post antes
         if self.request.user.is_authenticated:
-            view_exists = View.objects.filter(user=self.request.user, post=self.object).exists()
+            view_exists = PostView.objects.filter(user=self.request.user, post=self.object).exists()
             if not view_exists:
-                View.objects.create(user=self.request.user, post=self.object)
+                PostView.objects.create(user=self.request.user, post=self.object)
                 self.object.views += 1
                 self.object.save()
 

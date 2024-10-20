@@ -75,7 +75,7 @@ class Like(models.Model):
     class Meta:
         unique_together = ('user', 'post')  # Asegura que cada usuario solo pueda dar un "me gusta" por post
 
-class View(models.Model):
+class PostView(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
