@@ -64,7 +64,7 @@ class LoginForm(AuthenticationForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = usuario
-        fields = ('username', 'email', 'alias')
+        fields = ('username', 'email', 'alias','avatar')
 
     def form_valid(self, form):
 

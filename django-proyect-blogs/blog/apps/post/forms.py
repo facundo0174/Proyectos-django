@@ -28,6 +28,7 @@ class NewPostForm(PostForm):
 class UpdatePostForm(PostForm):
     image = forms.ImageField(required=False)
     print('entro en el post update')
+    
     def __init__(self, *args, **kwargs):
         print('entro en el init')
         # Obtenemos las imágenes activas del post que se quiere actualizar

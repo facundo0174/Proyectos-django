@@ -1,3 +1,5 @@
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView,DeleteView,UpdateView
 from apps.post.models import Post, PostImage, Category, Comment
 from apps.post.forms import NewPostForm, UpdatePostForm, CategoryForm, CommentForm
@@ -61,7 +63,7 @@ class PostUpdateView(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
     def get_success_url(self):
         # El reverse_lazy es para que no se ejecute hasta que se haya guardado el post
         return reverse_lazy('post:post_detail', kwargs={'slug': self.object.slug})
-
+    
 class PostDeleteView(LoginRequiredMixin, PermissionRequiredMixin,DeleteView):
     model = Post
     template_name = 'post/post_delete.html'
@@ -82,16 +84,21 @@ class PostListView(ListView):
     paginate_by = 10  # Número de posts por página
 
     def get_queryset(self):
-        order = self.request.GET.get('order', 'date')  # Obtener el parámetro de orden
+        order = self.request.GET.get('order', 'newest')  # Obtener el parámetro de orden
+        queryset = Post.objects.order_by('-creation_date')# Ordenar por fecha (más reciente primero) esto sucede cuando se ingresa por primera vez
         if order == 'alphabetical':
-            return Post.objects.order_by('title')  # Ordenar alfabéticamente por título
+            queryset = queryset.order_by('title')  # Ordenar alfabéticamente por título
         elif order == 'oldest':
-            return Post.objects.order_by('creation_date')  # Ordenar por fecha (más viejo primero)
-        return Post.objects.order_by('-creation_date')  # Ordenar por fecha (más reciente primero)
+            queryset = queryset.order_by('creation_date')  # Ordenar por fecha (más viejo primero)
+        elif order == 'newest':
+            queryset = queryset.order_by('-creation_date') # Ordenar por fecha (más reciente primero)
+        elif order == 'invert-alphabetical':
+            queryset = queryset.order_by('-title') # Ordenar alfabéticamente inverso por título
+        return queryset 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['order'] = self.request.GET.get('order', 'date')  # Añadir el orden al contexto
+        context['order'] = self.request.GET.get('order', 'newest')  # Añadir el orden al contexto
         return context
 
 class TestView(ListView):
@@ -126,13 +133,12 @@ class TestView(ListView):
 
         return (paginator, page_obj, page_obj.object_list, page_obj.has_other_pages())
 
-
 class PostCreateView(CreateView):
     model = Post
     form_class = NewPostForm
     template_name = 'post/post_create.html'
 
-    permission_required = 'post.create_post'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    permission_required = 'post.add_post'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna error 403
     
@@ -228,8 +234,6 @@ class PostDetailView(DetailView):
 
         return redirect('post:post_detail', slug=post.slug)
 
-
-
 class CategoryListView(ListView):
     model = Category
     template_name = 'post/category_list.html'
@@ -253,7 +257,7 @@ class CategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView)
     form_class = CategoryForm
     template_name = 'post/category_create.html'
     success_url = reverse_lazy('index')
-    permission_required = 'post.create_category'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    permission_required = 'post.add_category'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
     
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna error 403
@@ -283,6 +287,11 @@ class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin,UpdateView)
             return self.form_invalid(form)  # Devuelve el formulario con error
         
         return super().form_valid(form)#solo guarda si no encuentra coincidencias
+    
+    def form_invalid(self, form):
+        print('entro por formulario invalido el error es el siguietnt')
+        print(form.errors)
+        return super().form_invalid(form)
 
 class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin,DeleteView):
     model = Category
@@ -301,30 +310,28 @@ class PostByCategoryView(ListView):
     def get_queryset(self):
         #obtengo valores de evaluacion del contexto antes de evaluar y renderizar pagina por el url para tomar accion
         queryset = super().get_queryset() 
-        # obtengo el string asociado a el orden, si no existe devuelve recientes como valor por defecto
-        #este recientes es de post por fecha reciente, el caso de categoria recientes es uno muy especifico
-        orden = self.request.GET.get('orden', 'recientes')
         # obtego el slug reprecentante de la categoria
         category_slug = self.kwargs['slug']
         category = get_object_or_404(Category, slug=category_slug) #busco la categoria o da error
         queryset = Post.objects.filter(category=category) #ordeno antes de mostrar la vista por categoria los post
         # a partir de aca ordena por fecha o nombre
-        if orden == 'recientes':
-            queryset = queryset.order_by('-creation_date')
-        elif orden == 'antiguo':
-            queryset = queryset.order_by('creation_date')
-        elif orden == 'alfabetico-ascendente':
-            queryset = queryset.order_by('title')
-        elif orden == 'alfabetico-descendente':
-            queryset = queryset.order_by('-title')
+        order = self.request.GET.get('order', 'newest')  # Obtener el parámetro de orden
+        if order == 'alphabetical':
+            queryset = queryset.order_by('title')  # Ordenar alfabéticamente por título
+        elif order == 'oldest':
+            queryset = queryset.order_by('creation_date')  # Ordenar por fecha (más viejo primero)
+        elif order == 'invert-alphabetical':
+            queryset = queryset.order_by('-title') # Ordenar alfabéticamente inverso por título
+        else:
+            queryset = queryset.order_by('-creation_date') # Ordenar por fecha (más reciente primero)
         
-        return queryset
+        return queryset 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = get_object_or_404(Category, slug=self.kwargs['slug'])
         context['categories'] = Category.objects.all()  # Agrega todas las categorías al contexto
-        context['orden']= self.request.GET.get('orden','Recientes')
+        context['order'] = self.request.GET.get('order', 'newest')  # Añadir el orden al contexto
         context ['user'] = self.request.user #obtengo usuario autenticado
         return context
 
@@ -335,7 +342,7 @@ class CommentCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     model = Comment
     form_class = CommentForm
     template_name = 'post/post_detail.html'
-    permission_required = 'post.create_comment'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    permission_required = 'post.add_comment'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna error 403
     

@@ -15,6 +15,7 @@
             <label for="username">Nombre de Usuario: </label>{{ form.username }}  <!-- Campo de nombre de usuario -->
             {{ form.alias.errors }}  <!-- Muestra errores específicos del campo -->
             <label for="alias">Alias: </label> {{ form.alias }}  <!-- Campo de alias -->
+            <label for ='email'> email:</label> {{form.email}}
             <label> Avatar actual: <label>
                 <img src="{{user.avatar.url}}" alt="Avatar Actual" class="w-[400px] object-cover aspect-[16/9]">
                 <input type="file" name="avatar" id="avatar" class="form-control">
