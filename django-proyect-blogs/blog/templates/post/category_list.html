@@ -11,10 +11,14 @@
                     <h3 class="text-lg uppercase font-bold">{{ category.category_name }}</h3>
                     <p class="text-xs">Fecha de creación: {{ category.creation_date }}</p>
                 </div>
-                <div class="flex gap-2 mt-4">
-                    <a class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-400 transition duration-300 text-xs" href="{% url 'post:category_update' slug=category.slug %}">Editar categoría</a>
-                    <a class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-400 transition duration-300 text-xs" href="{% url 'post:category_delete' slug=category.slug %}">Eliminar categoría</a>
-                </div>
+              {% if user.is_authenticated %}
+                {% if user.is_collaborator or user.is_superuser %}
+                  <div class="flex gap-2 mt-4">
+                      <a class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-400 transition duration-300 text-xs" href="{% url 'post:category_update' slug=category.slug %}">Editar categoría</a>
+                      <a class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-400 transition duration-300 text-xs" href="{% url 'post:category_delete' slug=category.slug %}">Eliminar categoría</a>
+                  </div>
+                {% endif %}
+              {%endif%}
             </div>
         </div>     
     {% empty %}  

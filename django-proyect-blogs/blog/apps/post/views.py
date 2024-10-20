@@ -1,5 +1,3 @@
-from django.forms import BaseModelForm
-from django.http import HttpResponse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView,DeleteView,UpdateView
 from apps.post.models import Post, PostImage, Category, Comment
 from apps.post.forms import NewPostForm, UpdatePostForm, CategoryForm, CommentForm
@@ -7,29 +5,31 @@ from django.urls import reverse,reverse_lazy
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin,PermissionRequiredMixin
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post, Like, View
-class PostUpdateView(UpdateView):
+
+class PostUpdateView(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
     model = Post
     form_class = UpdatePostForm
     template_name = 'post/post_update.html'
 
+    permission_required = 'post.change_post'  # El permiso segun signals.py
+
+    def handle_no_permission(self):
+        return super().handle_no_permission()#retorna 403
+
     def get_form_kwargs(self):
-        print("se realizo llamada a contexto kwargs")
         kwargs = super().get_form_kwargs()
         kwargs['active_images'] = self.get_object().images.filter(active=True) # Pasamos las imágenes activas del post seleccionado a modificar
         return kwargs
-    print("entro a postUpdate")
+
+
     def form_valid(self, form):
-        print("se realizo la llamada a form_valid")
         post = form.save(commit=False)
         active_images = form.active_images
         keep_any_image_active = False
-
-        print("se realizo la entrada a save parcial")
-
         # Manejo de las imágenes activas
         if active_images:
             for image in active_images:
@@ -40,22 +40,17 @@ class PostUpdateView(UpdateView):
                     image.save()
                 else:
                     keep_any_image_active = True
-            print("se realizo la tratamiento de imagenes activas")
         # Manejo de las nuevas imágenes subidas
         
         images = self.request.FILES.getlist('images')
-        print(f"obtencion de imagenes contexto NUEVA{images}")
         if images:
-            print("entro al tratamiento de imganes nuevas, hay algo")
             for image in images:
                 PostImage.objects.create(post=post, image=image)
         # Si no se desea mantener ninguna imagen activa y no se subieron nuevas imágenes,se agrega una imagen por defecto
         if not keep_any_image_active and not images:
             PostImage.objects.create(post=post, image=settings.DEFAULT_POST_IMAGE)
         
-        print("salio de los tratamientos de imagenes ")
         post.save() # Guardar el post finalmente
-        print("se realizo print final de view")
         return super().form_valid(form)
     
     def form_invalid(self, form):
@@ -67,12 +62,20 @@ class PostUpdateView(UpdateView):
         # El reverse_lazy es para que no se ejecute hasta que se haya guardado el post
         return reverse_lazy('post:post_detail', kwargs={'slug': self.object.slug})
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, PermissionRequiredMixin,DeleteView):
     model = Post
     template_name = 'post/post_delete.html'
     success_url = reverse_lazy('post:category_recent')
 
+    # Verificar el permiso adecuado
+    permission_required = 'post.delete_post'  # El permiso que se requiere para eliminar posts
+
+    # Sobrescribir el método para manejar cuando el usuario no tiene permisos
+    def handle_no_permission(self):
+        return super().handle_no_permission()
+
 class PostListView(ListView):
+    # esta view reprecenta la conjuncion de todas las categorias a la cual retorna la lista de post ordenado por fecha reciente
     model = Post
     template_name = 'post/category_recent.html'
     context_object_name = 'posts'
@@ -128,6 +131,10 @@ class PostCreateView(CreateView):
     model = Post
     form_class = NewPostForm
     template_name = 'post/post_create.html'
+
+    permission_required = 'post.create_post'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    def handle_no_permission(self):
+        return super().handle_no_permission()#retorna error 403
     
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -164,8 +171,10 @@ class PostDetailView(DetailView):
         # Obtener todas las imágenes activas del post
         active_images = self.object.images.filter(active=True) 
         context['active_images'] = active_images
+        context['add_comment_form'] =  CommentForm()
+        context ['user'] = self.request.user #obtengo usuario autenticado para comprobacion a nivel template
         context['add_comment_form'] = CommentForm()
-        
+   
         # Obtener el estado del "me gusta" para el usuario actual
         if self.request.user.is_authenticated:
             user_like = Like.objects.filter(user=self.request.user, post=self.object).exists()
@@ -185,6 +194,18 @@ class PostDetailView(DetailView):
             else:
                 context['editing_comment_id'] = None
                 context['edit_comment_form'] = None
+        #empieza la linea no borrada del merge que se asegura de el autor es el que trata de borrar y lo que se quiera borrar no sea un SU o collaborator
+        # Eliminar comentario
+        delete_comment_id = self.request.GET.get('delete_comment')
+        if delete_comment_id:
+            comment = get_object_or_404(Comment, id=delete_comment_id)
+            # Permitimos solo si el usuario logueado tiene permiso para eliminar el comentario TODO: accion colaborador no esta
+            if ( comment.author == self.request.user or (comment.post.author == self.request.user and not comment.author.is_admin and not comment.author.is_superuser) or self.request.user.is_superuser or self.request.user.groups.filter( name='administrator').exists()):
+                        # Es autor del comentario, Es autor del post, pero el comentario no es de un admin o un superuser
+                context['deleting_comment_id'] = comment.id
+            else:
+                context['deleting_comment_id'] = None
+         #termina la linea no borrada
 
         return context
 
@@ -220,15 +241,22 @@ class CategoryListView(ListView):
         return Category.objects.order_by('category_name')
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # No es necesario volver a obtener las categorías aquí
+        context = super().get_context_data(**kwargs)  
+        #context ['user'] = self.request.user #obtengo usuario autenticado para comprobacion a nivel template
+        #estaba en desarrollo no se sabe porque no se lo incorpora ['user']
+        # No es necesario volver a obtener las categorías aquí razon lo hace el queryset
+
         return context
 
-class CategoryCreateView(CreateView):
+class CategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'post/category_create.html'
     success_url = reverse_lazy('index')
+    permission_required = 'post.create_category'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    
+    def handle_no_permission(self):
+        return super().handle_no_permission()#retorna error 403
 
     def form_valid(self, form):
         
@@ -238,11 +266,14 @@ class CategoryCreateView(CreateView):
         
         return super().form_valid(form)#solo guarda si no encuentra coincidencias
 
-class CategoryUpdateView(UpdateView):
+class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin,UpdateView):
     model = Category
     form_class = CategoryForm
     template_name = 'post/category_update.html'
     success_url = reverse_lazy('index')
+    permission_required = 'post.change_category'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    def handle_no_permission(self):
+        return super().handle_no_permission()#retorna error 403
 
     def form_valid(self, form):
         
@@ -253,10 +284,13 @@ class CategoryUpdateView(UpdateView):
         
         return super().form_valid(form)#solo guarda si no encuentra coincidencias
 
-class CategoryDeleteView(DeleteView):
+class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin,DeleteView):
     model = Category
     template_name = 'post/category_delete.html'
     success_url = reverse_lazy('index')
+    permission_required = 'post.delete_category'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    def handle_no_permission(self):
+        return super().handle_no_permission()#retorna error 403
 
 class PostByCategoryView(ListView):
     model = Post
@@ -265,37 +299,45 @@ class PostByCategoryView(ListView):
     paginate_by = 5  # Asegúrate de incluir esta línea
 
     def get_queryset(self):
-        # Obtén el slug de la URL y busca la categoría correspondiente
+        #obtengo valores de evaluacion del contexto antes de evaluar y renderizar pagina por el url para tomar accion
+        queryset = super().get_queryset() 
+        # obtengo el string asociado a el orden, si no existe devuelve recientes como valor por defecto
+        #este recientes es de post por fecha reciente, el caso de categoria recientes es uno muy especifico
+        orden = self.request.GET.get('orden', 'recientes')
+        # obtego el slug reprecentante de la categoria
         category_slug = self.kwargs['slug']
-        category = get_object_or_404(Category, slug=category_slug)
-        if category_slug.lower() == 'recientes':  # Se sensible a mayúsculas y minúsculas
-            return Post.objects.all().order_by('-creation_date')  # Ordena todos por fecha reciente
-        else:
-            return Post.objects.filter(category=category).order_by('-creation_date')  # Ordena según categoría y por fecha reciente
+        category = get_object_or_404(Category, slug=category_slug) #busco la categoria o da error
+        queryset = Post.objects.filter(category=category) #ordeno antes de mostrar la vista por categoria los post
+        # a partir de aca ordena por fecha o nombre
+        if orden == 'recientes':
+            queryset = queryset.order_by('-creation_date')
+        elif orden == 'antiguo':
+            queryset = queryset.order_by('creation_date')
+        elif orden == 'alfabetico-ascendente':
+            queryset = queryset.order_by('title')
+        elif orden == 'alfabetico-descendente':
+            queryset = queryset.order_by('-title')
+        
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = get_object_or_404(Category, slug=self.kwargs['slug'])
         context['categories'] = Category.objects.all()  # Agrega todas las categorías al contexto
+        context['orden']= self.request.GET.get('orden','Recientes')
+        context ['user'] = self.request.user #obtengo usuario autenticado
         return context
-
 
 class AcercaDe(TemplateView):
     template_name='post/acerca_de.html'
 
-class Recent_Post_View(ListView):
-    model = Post
-    template_name = 'post/category_recent.html'
-    context_object_name = 'posts'
-
-    def get_queryset(self):
-        #retorno una lista  de objetos post ordenados por fecha reciente
-        return Post.objects.all().order_by('-creation_date') #ordeno a todos por fecha reciente
-
-class CommentCreateView(CreateView):
+class CommentCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     model = Comment
     form_class = CommentForm
     template_name = 'post/post_detail.html'
+    permission_required = 'post.create_comment'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    def handle_no_permission(self):
+        return super().handle_no_permission()#retorna error 403
     
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -318,8 +360,8 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('post:post_detail', kwargs={'slug':self.object.post.slug})
     
-    def test_func(self):
-        comment = self.get_object()
+    def test_func(self): #prueba de acceso para los objetos, en este caso el comentario seleccionado a editar/eliminar
+        comment = self.get_object()#si es el mismo autor entonces permite modificar/eliminar, sino tira error
         return comment.author == self.request.user
     
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -333,9 +375,11 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return reverse_lazy('post:post_detail', kwargs={'slug':self.object.post.slug})
     
     def test_func(self):
+        #aqui la prueba se complejiza ya que compueba los permisos y grupos para la eliminacion
         comment = self.get_object()
         is_comment_author = self.request.user == comment.author
         is_post_author = (self.request.user == comment.post.author and not comment.author.is_admin and not comment.author.is_superuser)
         is_admin = self.request.user.is_superuser or self.request.user.groups.filter(name='administrator').exists()
 
         return is_comment_author or is_post_author or is_admin
+

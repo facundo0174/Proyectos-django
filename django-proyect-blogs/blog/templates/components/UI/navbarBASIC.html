@@ -20,12 +20,14 @@
                 <li class="p-4">
                     <a href="{% url 'post:category_create' %}" class="text-white hover:text-blue-200 duration-500">Crear Categoria</a>
                 </li>
+
                 <li class="p-4">
                     <a href="{% url 'post:category_list' %}" class="text-white hover:text-blue-200 duration-500">Editar Categorias</a>
                 </li>
             {% endif %}
             <li class="p-4">
-                <a href="{% url 'user:user_profile' %}" class="text-white hover:text-blue-200 duration-500">Perfil</a>
+                <a href="{% url 'user:user_profile' user.id %}?next={{ request.path }}" class="text-white hover:text-blue-200 duration-500">Perfil</a>
+
             </li>
             <li class="p-4">
                 <form method="POST" action="{% url 'user:auth_logout' %}?next={{ request.path }}">
@@ -37,8 +39,10 @@
             <li class="p-4">
                 <a href="{% url 'admin:index' %}" class="text-white hover:text-blue-200 duration-500">Login ADMIN</a>
             </li>
+
             <li class="p-4">
                 <a href="{% url 'user:auth_login' %}?next={{ request.path }}" class="text-white hover:text-blue-200 duration-500">Login</a>
+
             </li>
             <li class="p-4">
                 <a href="{% url 'user:auth_register' %}" class="text-white hover:text-blue-200 duration-500">Registrarse</a>

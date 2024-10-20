@@ -14,10 +14,7 @@ def get_avatar_filename(instance,filename):#la instancia y el archivo lo esta pa
 
 class usuario(AbstractUser):
     
-
-    #aqui sumas los atributos que faltan segun tu MER
-    # se pondra el ejemplo del profe en consiguiente:
-    alias = models.CharField(max_length=30 , blank= True) #equivalente a VARCHAR con restricion 30 caracteres y posibilidad de estar en blanco
+    alias = models.CharField(max_length=30 , default= None, null=True,blank=True) #equivalente a VARCHAR con restricion 30 caracteres y posibilidad de estar en blanco
     avatar = models.ImageField(upload_to=get_avatar_filename, default='user/default/avatar_default.jpg')
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False)
     
