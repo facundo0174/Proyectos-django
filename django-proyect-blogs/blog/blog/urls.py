@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
-from blog.views import vistaindex, not_found_view, internal_error_view, forbidden_view
-from blog.views import VistaIndex
+from blog.views import VistaIndex, not_found_view, internal_error_view, forbidden_view
 
 #si tienes una view como clase debes hace as view() siempre
 
