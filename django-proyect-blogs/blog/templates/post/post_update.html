@@ -38,8 +38,8 @@
 
         <!-- Opción para permitir comentarios -->
         <div class="flex gap-4 items-center text-white">
-            <label>{{ form.allow_comments.label_tag }}</label>
-            {{ form.allow_comments }}
+            <label>{{ form.allowed_comments.label_tag }}</label>
+            {{ form.allowed_comments }}
         </div>
 
         <h3 class="text-white font-semibold mt-4">Imágenes cargadas</h3>
@@ -55,6 +55,11 @@
             {% endfor %}
         </div>
 
+        <div class="flex gap-4 items-center text-white">
+            <label>Destacado</label>
+                {{ form.is_featured }}
+        </div>
+
         <h3 class="text-white font-semibold mt-4">Cargar nuevas imágenes</h3>
         <input type="file" name="images" multiple class="bg-gray-700 text-white p-2 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" />
 
@@ -62,6 +67,7 @@
             <a href="{% url 'post:post_detail' slug=form.instance.slug %}" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300">
                 Cancelar
             </a>
+            
             <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition duration-300">
                 Guardar cambios
             </button>
