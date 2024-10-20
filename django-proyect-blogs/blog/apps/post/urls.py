@@ -1,5 +1,7 @@
 from django.urls import path
 import apps.post.views as vistaPost
+from apps.post.views import ContactView  
+from django.views.generic import TemplateView
 #si tienes una view como clase debes hace as view() siempre
 app_name = 'post'
 '''
@@ -24,5 +26,7 @@ urlpatterns = [
     path('comments/<uuid:pk>/update/', vistaPost.CommentUpdateView.as_view(),name='comment_update'),
     path('comments/<uuid:pk>/delete/', vistaPost.CommentDeleteView.as_view(),name='comment_delete'),
     path('test/', vistaPost.TestView.as_view(), name='test_view'),
+    path('contact/', ContactView.as_view(), name='contact'), 
+    path('thanks/', TemplateView.as_view(template_name='thanks.html'), name='thanks'),
 ]
 

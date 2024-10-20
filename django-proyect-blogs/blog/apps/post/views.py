@@ -11,7 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin,P
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post, Like, View
-
+from django.views import View
+from django.core.mail import send_mail
 class PostUpdateView(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
     model = Post
     form_class = UpdatePostForm
@@ -390,3 +391,21 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
         return is_comment_author or is_post_author or is_admin
 
+class ContactView(View):
+    def get(self, request):
+        return render(request, 'contact.html')  # Asegúrate de tener este archivo en templates
+
+    def post(self, request):
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        # Configura el correo
+        subject = f"Nuevo mensaje de {name}"
+        body = f"Nombre: {name}\nEmail: {email}\nMensaje: {message}"
+        from_email = settings.EMAIL_HOST_USER  # Tu correo de Gmail
+        to_email = settings.ADMIN_EMAIL  # Correo del administrador
+
+        send_mail(subject, body, from_email, [to_email])
+
+        return redirect('post:thanks')  # Redirige a la página de agradecimiento

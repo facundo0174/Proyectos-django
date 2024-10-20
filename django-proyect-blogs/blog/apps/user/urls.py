@@ -2,6 +2,7 @@ from django.urls import path
 import apps.user.views as vistaUser
 
 
+
 #si tienes una view como clase debes hace as view() siempre
 app_name = 'user'
 urlpatterns = [
@@ -11,6 +12,7 @@ urlpatterns = [
     path('auth/register/',vistaUser.RegisterView.as_view(),name="auth_register"),
     path('auth/login/',vistaUser.LoginView.as_view(),name='auth_login'),
     path('auth/logout/',vistaUser.LogoutView.as_view(),name='auth_logout'),
+
 ]
 
 

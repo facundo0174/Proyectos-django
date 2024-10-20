@@ -77,17 +77,17 @@
                     <!-- Nombre -->
                     <div class="flex flex-col">
                         <label for="name" class="text-white text-sm font-semibold">Nombre</label>
-                        <input type="text" id="name" name="name" placeholder="Tu nombre" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" required>
+                        {{ form.name }}
                     </div>
                     <!-- Correo Electrónico -->
                     <div class="flex flex-col">
                         <label for="email" class="text-white text-sm font-semibold">Correo Electrónico</label>
-                        <input type="email" id="email" name="email" placeholder="Tu correo" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" required>
+                        {{ form.email }}
                     </div>
                     <!-- Mensaje -->
                     <div class="flex flex-col">
                         <label for="message" class="text-white text-sm font-semibold">Mensaje</label>
-                        <textarea id="message" name="message" placeholder="Tu mensaje" class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 h-32" required></textarea>
+                        {{ form.message }}
                     </div>
                     <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 transition duration-300 mt-6">Enviar</button>
                 </div>

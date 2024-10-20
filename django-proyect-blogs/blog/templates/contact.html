@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contáctanos</title>
+    {% load static %}  <!-- Cargar archivos estáticos -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900">
+
+<div class="container mx-auto p-8">
+    <h1 class="text-white text-3xl font-semibold text-center mb-6">Contáctanos</h1>
+
+    <form action="" method="post" class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
+        {% csrf_token %}
+        <div class="flex flex-col gap-6">
+            <!-- Nombre -->
+            <div class="flex flex-col">
+                <label for="name" class="text-white text-sm font-semibold">Nombre:</label>
+                <input type="text" id="name" name="name" required class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" placeholder="Escribe tu nombre..." />
+            </div>
+            
+            <!-- Email -->
+            <div class="flex flex-col">
+                <label for="email" class="text-white text-sm font-semibold">Email:</label>
+                <input type="email" id="email" name="email" required class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" placeholder="Escribe tu email..." />
+            </div>
+            
+            <!-- Mensaje -->
+            <div class="flex flex-col">
+                <label for="message" class="text-white text-sm font-semibold">Mensaje:</label>
+                <textarea id="message" name="message" rows="4" required class="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" placeholder="Escribe tu mensaje..."></textarea>
+            </div>
+            
+            <!-- Botón enviar -->
+            <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg w-full hover:bg-blue-500 transition duration-300">Enviar</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
+
