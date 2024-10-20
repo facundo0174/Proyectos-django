@@ -54,8 +54,11 @@ usuario colaborador solo sus comentario
 admins solo sus comentario
 superusers solo sus comentario
 
-Integrantes del Grupo 12
--Ángel Emmanuel López Vega: Especialista en el diseño frontend y la experiencia de usuario.
--Franco Quiroz Facundo Agustín: Enfocado en el desarrollo backend y la integración con Django.
--Silvina Alejandra Olmos:Encargada de la investigación y redacción de artículos,análisis de noticias tecnológicas además de soporte técnico.
+**Integrantes del Grupo 12**
+
+**Ángel Emmanuel López Vega:** Especialista en el diseño frontend y la experiencia de usuario.
+
+**Franco Quiroz Facundo Agustín:** Enfocado en el desarrollo backend y la integración con Django.
+
+**Silvina Alejandra Olmos: **Encargada de la investigación y redacción de artículos,análisis de noticias tecnológicas además de soporte técnico.
               
