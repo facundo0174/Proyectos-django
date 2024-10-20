@@ -31,7 +31,7 @@
         <!-- Nombre de Usuario -->
         <div class="flex flex-col">
             <label for="username" class="text-white text-sm font-semibold">Nombre de Usuario:</label>
-            <!-- Muestra los errores específicos del campo username -->
+            
             {% if form.username.errors %}
                 <div class="text-red-500 text-sm mt-1">{{ form.username.errors }}</div>
             {% endif %}
