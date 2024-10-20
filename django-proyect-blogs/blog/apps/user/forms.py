@@ -19,6 +19,11 @@ class UserUpdateForm(forms.ModelForm):
         model = usuario
         fields = ('username', 'email', 'alias')
 
+    def form_valid(self, form):
+
+        if 'avatar' in self.request.FILES:
+            avatar_file = self.request.FILES['avatar']
+
     def clean_username(self):
         username = self.cleaned_data.get('username') #obtengo el contenido actual del username de usuario models.py
         current_username = self.instance.username  # El nombre de usuario actual

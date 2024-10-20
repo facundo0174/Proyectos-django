@@ -19,7 +19,7 @@ class UserProfileView(LoginRequiredMixin,DetailView):
     def get_object(self):
         #obtengo el id de usuario del url, y busco en la BD el objeto usuario segun el modelo usuario actual de la tabla y lo traigo
         user = self.request.user #esto me asegura que solo el propio usuario pueda ver su perfil y nadie mas
-        return get_object_or_404(usuario, pk=user.pk)
+        return user
     
 class UserUpdateView(LoginRequiredMixin,UpdateView):
     model = usuario

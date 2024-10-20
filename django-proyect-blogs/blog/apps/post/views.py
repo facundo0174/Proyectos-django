@@ -11,7 +11,7 @@ class PostUpdateView(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
     form_class = UpdatePostForm
     template_name = 'post/post_update.html'
 
-    permission_required = 'post.update_post_permission'  # El permiso segun signals.py
+    permission_required = 'post.change_post'  # El permiso segun signals.py
 
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna 403
@@ -64,7 +64,7 @@ class PostDeleteView(LoginRequiredMixin, PermissionRequiredMixin,DeleteView):
     success_url = reverse_lazy('post:category_recent')
 
     # Verificar el permiso adecuado
-    permission_required = 'post.delete_post_permission'  # El permiso que se requiere para eliminar posts
+    permission_required = 'post.delete_post'  # El permiso que se requiere para eliminar posts
 
     # Sobrescribir el método para manejar cuando el usuario no tiene permisos
     def handle_no_permission(self):
@@ -91,7 +91,7 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     form_class = NewPostForm
     template_name = 'post/post_create.html'
 
-    permission_required = 'post.create_post_permission'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    permission_required = 'post.create_post'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna error 403
     
@@ -172,7 +172,7 @@ class CategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView)
     form_class = CategoryForm
     template_name = 'post/category_create.html'
     success_url = reverse_lazy('index')
-    permission_required = 'post.create_category_permission'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    permission_required = 'post.create_category'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
     
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna error 403
@@ -190,7 +190,7 @@ class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin,UpdateView)
     form_class = CategoryForm
     template_name = 'post/category_update.html'
     success_url = reverse_lazy('index')
-    permission_required = 'post.update_post_permission'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    permission_required = 'post.change_category'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna error 403
 
@@ -207,7 +207,7 @@ class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin,DeleteView)
     model = Category
     template_name = 'post/category_delete.html'
     success_url = reverse_lazy('index')
-    permission_required = 'post.delete_post_permission'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    permission_required = 'post.delete_category'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna error 403
 
@@ -254,7 +254,7 @@ class CommentCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     model = Comment
     form_class = CommentForm
     template_name = 'post/post_detail.html'
-    permission_required = 'post.create_post_permission'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
+    permission_required = 'post.create_comment'  # El permiso segun lo_que_modifica.nombre_permiso_de_signals
     def handle_no_permission(self):
         return super().handle_no_permission()#retorna error 403
     
