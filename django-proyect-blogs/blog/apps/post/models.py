@@ -25,9 +25,9 @@ class Category(models.Model):
 class Post(models.Model):
     
     id=models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title=models.CharField(max_length=100)
+    title=models.CharField(max_length=200)
     slug=models.SlugField(unique=True, max_length=200)
-    content =  models.TextField(max_length=3000)#contenido del post
+    content =  models.TextField()#contenido del post
     author=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,null=True)
     # si quieres eliminar todos los post al eliminar usuario se coloca: on_delete=models.CASCADE, para que no muestre user al elimnar, on_delete=setnull
     creation_date=models.DateTimeField(default=timezone.now)
