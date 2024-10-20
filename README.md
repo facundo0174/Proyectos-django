@@ -60,5 +60,5 @@ superusers solo sus comentario
 
 **Franco Quiroz Facundo Agustín:** Enfocado en el desarrollo backend y la integración con Django.
 
-**Silvina Alejandra Olmos: **Encargada de la investigación y redacción de artículos,análisis de noticias tecnológicas además de soporte técnico.
+**Silvina Alejandra Olmos:** Encargada de la investigación y redacción de artículos,análisis de noticias tecnológicas además de soporte técnico.
               
