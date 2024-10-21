@@ -54,6 +54,10 @@ usuario colaborador solo sus comentario
 admins solo sus comentario
 superusers solo sus comentario
 
+***informacion sobre SU de pruebas/defecto para su respectiva comprobacion del proyecto, asi como el email donde se envian las consultas***
+    -    SU:root, password: root
+    -     correo: bloginfog09@gmail.com , password: e v u z n l r w g h z p m y m u
+    
 **Integrantes del Grupo 12**
 
 **Ángel Emmanuel López Vega:** Especialista en el diseño frontend y la experiencia de usuario.
